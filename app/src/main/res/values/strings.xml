@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Describable Example</string>
+    <string name="description_metadata_author_date">Author, date</string>
 </resources>
