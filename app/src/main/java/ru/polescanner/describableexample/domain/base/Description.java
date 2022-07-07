@@ -23,7 +23,7 @@ public abstract class Description {
                           @NonNull String filename,
                           @NonNull String hash) {
         this.thumbnail = thumbnail;
-        this.thumbnail64 = thumbnail64(thumbnail);
+        this.thumbnail64 = "";//thumbnail64(thumbnail);
         this.metadata = metadata;
         this.filename = filename;
         this.hash = hash;
@@ -58,7 +58,7 @@ public abstract class Description {
         }
 
         public Metadata(@NonNull final String author, @NonNull final String dateInString) {
-            this(author, LocalDate.parse(dateInString));
+            this(author, LocalDate.parse(dateInString, DateTimeFormatter.ofPattern("dd.MM.yy")));
         }
 
         public Metadata(@NonNull final String author) {

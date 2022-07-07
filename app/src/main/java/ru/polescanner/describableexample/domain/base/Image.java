@@ -3,6 +3,7 @@ package ru.polescanner.describableexample.domain.base;
 import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 //ToDo Check if Image has to be serializable
@@ -37,7 +38,7 @@ public class Image extends Description {
     }
 
     public static final class Builder {
-        private final Bitmap thumbnail;
+        private Bitmap thumbnail;
         private Description.Metadata metadata;
         private String author;
         private LocalDate date;
@@ -46,8 +47,12 @@ public class Image extends Description {
 
         private Builder(String filename) {
             this.filename = filename;
-            this.thumbnail = DescriptionUtility.getThumbnail(filename);
             this.hash = DescriptionUtility.getHash(filename);
+        }
+
+        public Builder thumbnail(Bitmap thumbnail) {
+            this.thumbnail = thumbnail;
+            return this;
         }
 
         public Builder author(String author){
@@ -56,7 +61,7 @@ public class Image extends Description {
         }
 
         public Builder date(String dateDDPointMMPointYY){
-            this.date = LocalDate.parse(dateDDPointMMPointYY);
+            this.date = LocalDate.parse(dateDDPointMMPointYY, DateTimeFormatter.ofPattern("dd.MM.yy"));
             return this;
         }
 
