@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -54,7 +55,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
                 .load(current.getThumbnail())
                 .into(holder.ivDescriptionThumbnail);
         holder.tvDescriptionMetadata.setText(current.getMetadata());
-        holder.llDescriptionItem.setOnClickListener(new View.OnClickListener() {
+        holder.cvDescriptionItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked on: " + current.getMetadata());
@@ -95,13 +96,13 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         private static final String TAG = "DescriptionViewHolder";
         ImageView ivDescriptionThumbnail;
         TextView tvDescriptionMetadata;
-        LinearLayout llDescriptionItem;
+        CardView cvDescriptionItem;
 
         public DescriptionViewHolder(@NonNull View itemView) {
             super(itemView);
             ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionThumbnail);
             tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionMetadata);
-            llDescriptionItem = itemView.findViewById(R.id.llDescriptionItem);
+            cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionItem);
         }
     }
 

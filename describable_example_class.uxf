@@ -1,0 +1,37 @@
+<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><element><id>UMLInterface</id><coordinates><x>60</x><y>60</y><w>220</w><h>100</h></coordinates><panel_attributes>Describable
+--
+getDescriptions(): Descriptions[] 
+addDescription(desc: Description)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>330</y><w>310</w><h>340</h></coordinates><panel_attributes>/Description/
+--
+-THUMBNAIL:  Bitmap
+-THUMBNAIL64: String
+#metadata: Metadata
+#filename: String
+#hash: String
+--
+#Description(thumbnail, metadata, filename, hash)
++equals(o: Object): boolean
++hashCode(): int
+/+toString64() : String/
+-thumbnail64(image: Bitmap): String
++getThumbnail(): Bitmap
++getMetadata(): String
+{innerclass
+__Metadata__
+--
+-author: String
+-date: LocalDate
+--
++Metadata(author: String, date: LocalDate)
++Metadata(author: String, dateInString: String)
++Metadata(author: String)
++Metadata()
++toString()
+
+innerclass}
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>550</x><y>320</y><w>290</w><h>370</h></coordinates><panel_attributes>Image
+--
+-Image(builder: Image.Builder)</panel_attributes><additional_attributes></additional_attributes></element></diagram>

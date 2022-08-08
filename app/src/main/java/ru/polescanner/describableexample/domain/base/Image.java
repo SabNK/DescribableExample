@@ -8,8 +8,6 @@ import java.util.Objects;
 
 //ToDo Check if Image has to be serializable
 public class Image extends Description {
-    //TODO security issue
-    private String imageHash;
 
     private Image(Image.Builder builder){
         super(builder.thumbnail, builder.metadata, builder.filename, builder.hash);
@@ -20,18 +18,9 @@ public class Image extends Description {
         return "";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Image image = (Image) o;
-        return Objects.equals(imageHash, image.imageHash);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(imageHash);
-    }
+
+
 
     public static Builder image(@NonNull String filename) {
         return new Builder(filename);

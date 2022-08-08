@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 
 public abstract class Description {
@@ -29,6 +30,17 @@ public abstract class Description {
         this.hash = hash;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Description d = (Description) o;
+        return Objects.equals(hash, d.hash);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(hash);
+    }
 
     public abstract String toString64();
 
@@ -51,6 +63,7 @@ public abstract class Description {
         private final String author;
         //ToDo Check LocalDate? - Date is legacy.
         private final LocalDate date;
+
         //ToDo Checks from SecureByDesign
         public Metadata(@NonNull final String author, @NonNull final LocalDate date) {
             this.author = author;
@@ -64,6 +77,7 @@ public abstract class Description {
         public Metadata(@NonNull final String author) {
             this(author, LocalDate.now());
         }
+
         //ToDo Add constructor with no args - take author in singlton
         public Metadata() {
             this("");

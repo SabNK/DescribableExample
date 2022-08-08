@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:baselineAligned="false"
-    android:id="@+id/llDescriptionItem"
-    android:weightSum="8"
-    android:padding="15dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="1dp">
 
-    <ImageView
-        android:id="@+id/ivDescriptionThumbnail"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="5" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="108dp"
+        android:layout_height="190dp"
+        app:cardCornerRadius="4dp"
+        app:cardMaxElevation="2dp"
+        app:cardElevation="1dp"
+        app:cardBackgroundColor="@color/purple_200"
+        android:layout_centerInParent="true"
+        android:id="@+id/cvDescriptionItem"
 
-    <TextView
-        android:id="@+id/tvDescriptionMetadata"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="right"
-        android:text="@string/description_metadata_author_date"
+        >
 
-        />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/ivDescriptionThumbnail"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="4dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_launcher_background"
+                />
+
+            <TextView
+                android:id="@+id/tvDescriptionMetadata"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_below="@id/ivDescriptionThumbnail"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="@string/description_metadata_author_date"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="15sp"
+                />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
