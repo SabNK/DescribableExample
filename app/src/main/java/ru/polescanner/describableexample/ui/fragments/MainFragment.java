@@ -25,6 +25,7 @@ import ru.polescanner.describableexample.adapters.DescriptionAdapter;
 import ru.polescanner.describableexample.domain.base.Description;
 import ru.polescanner.describableexample.domain.base.DescriptionUtility;
 import ru.polescanner.describableexample.domain.base.Image;
+import ru.polescanner.describableexample.domain.base.Image2;
 import ru.polescanner.describableexample.ui.viewmodels.MainViewModel;
 
 public class MainFragment extends Fragment {
@@ -90,12 +91,23 @@ public class MainFragment extends Fragment {
                                                                                      dates[k]);
                             String filename = DescriptionUtility.saveBitmapToFile(resource, view.getContext());
                             Bitmap thumbnail = DescriptionUtility.getThumbnail(filename, view.getContext());
-                            Description desc = Image
-                                    .image(filename)
-                                    .thumbnail(thumbnail)
-                                    .author(authors[k])
-                                    .date(dates[k])
-                                    .build();
+                            Description desc;
+                            if (k/2 == 0) {
+                                desc = Image
+                                        .image(filename)
+                                        .thumbnail(thumbnail)
+                                        .author(authors[k])
+                                        .date(dates[k])
+                                        .build();
+                            }
+                            else {
+                                desc = Image2
+                                        .image(filename)
+                                        .thumbnail(thumbnail)
+                                        .author(authors[k])
+                                        .date(dates[k])
+                                        .build();
+                            }
                             mViewModel.describableEntity.addDescription(desc);
                             if (mViewModel.describableEntity.getDescriptions().size() == 3) {
                                 initDescriptionRecyclerView(view);

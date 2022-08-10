@@ -26,7 +26,7 @@ import ru.polescanner.describableexample.domain.base.Description;
 import ru.polescanner.describableexample.domain.base.DescriptionUtility;
 
 //ToDo discuss async operations with load multimedia from Server
-public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.DescriptionViewHolder> {
+public class DescriptionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "DescriptionAdapter";
     private Context context;
     private List<Description> descriptions;
@@ -37,25 +37,45 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         this.descriptions.add(getAddStub(context));
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (descriptions.get(position).getClass().getSimpleName().equals("Image"))
+            return 0;
+        else
+            return 1;
+    }
+
     @NonNull
     @Override
-    public DescriptionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_description,
-                                                                  parent,
-                                                                  false);
-        return new DescriptionViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v;
+        switch (viewType) {
+            case 0:
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_description,
+                                                                          parent,
+                                                                          false);
+                return new ImageViewHolder(v);
+            case 1:
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_description2,
+                                                                          parent,
+                                                                          false);
+                return new ImageViewHolder2(v);
+        }
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DescriptionViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder,
+                                 @SuppressLint("RecyclerView") final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
         Description current = descriptions.get(position);
+        DescriptionViewHolder viewHolder = (DescriptionViewHolder) holder;
         Glide.with(context)
                 .asBitmap()
                 .load(current.getThumbnail())
-                .into(holder.ivDescriptionThumbnail);
-        holder.tvDescriptionMetadata.setText(current.getMetadata());
-        holder.cvDescriptionItem.setOnClickListener(new View.OnClickListener() {
+                .into(viewHolder.ivDescriptionThumbnail);
+        viewHolder.tvDescriptionMetadata.setText(current.getMetadata());
+        viewHolder.cvDescriptionItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked on: " + current.getMetadata());
@@ -92,7 +112,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         return bitmap;
     }
 
-    public class DescriptionViewHolder extends RecyclerView.ViewHolder {
+    abstract class DescriptionViewHolder extends RecyclerView.ViewHolder {
         private static final String TAG = "DescriptionViewHolder";
         ImageView ivDescriptionThumbnail;
         TextView tvDescriptionMetadata;
@@ -100,11 +120,29 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         public DescriptionViewHolder(@NonNull View itemView) {
             super(itemView);
+        }
+    }
+
+    public class ImageViewHolder extends DescriptionViewHolder {
+
+        public ImageViewHolder(@NonNull View itemView) {
+            super(itemView);
             ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionThumbnail);
             tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionMetadata);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionItem);
         }
     }
+
+    public class ImageViewHolder2 extends DescriptionViewHolder {
+
+        public ImageViewHolder2(@NonNull View itemView) {
+            super(itemView);
+            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionThumbnail2);
+            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionMetadata2);
+            cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionItem2);
+        }
+    }
+
 
     //ToDo make a res with an icon +add multimedia
     private class AddDescriptionStub extends Description {
