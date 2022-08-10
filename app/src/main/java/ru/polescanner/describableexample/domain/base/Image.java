@@ -1,15 +1,11 @@
 package ru.polescanner.describableexample.domain.base;
 
-import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 //ToDo Check if Image has to be serializable
 public class Image extends Description {
 
-    private Image(Image.Builder builder){
+    private Image(Builder builder){
         super(builder.thumbnail, builder.metadata, builder.filename, builder.hash);
     }
 
@@ -18,57 +14,22 @@ public class Image extends Description {
         return "";
     }
 
-
-
-
-
     public static Builder image(@NonNull String filename) {
         return new Builder(filename);
     }
 
-    public static final class Builder {
-        private Bitmap thumbnail;
-        private Description.Metadata metadata;
-        private String author;
-        private LocalDate date;
-        private final String filename;
-        private final String hash;
+
+    public static final class Builder extends GenericBuilder<Builder> {
 
         private Builder(String filename) {
-            this.filename = filename;
-            this.hash = DescriptionUtility.getHash(filename);
+            super(filename);
         }
 
-        public Builder thumbnail(Bitmap thumbnail) {
-            this.thumbnail = thumbnail;
-            return this;
-        }
-
-        public Builder author(String author){
-            this.author = author;
-            return this;
-        }
-
-        public Builder date(String dateDDPointMMPointYY){
-            this.date = LocalDate.parse(dateDDPointMMPointYY, DateTimeFormatter.ofPattern("dd.MM.yy"));
-            return this;
-        }
-
-        public Image build() {
-            if (this.author != null) {
-                if (this.date != null)
-                    this.metadata = new Metadata(this.author, this.date);
-                else
-                    this.metadata = new Metadata(this.author);
-            } else
-                this.metadata = new Metadata();
+        @Override
+        public Description build(){
+            setMetadata();
             return new Image(this);
         }
-
-
-
-
-
     }
 }
 /*

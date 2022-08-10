@@ -90,4 +90,51 @@ public abstract class Description {
             return this.author + " " + this.date.format(formatter);
         }
     }
+
+    abstract static class GenericBuilder<B extends GenericBuilder<B>> {
+        protected Bitmap thumbnail;
+        protected Description.Metadata metadata;
+        protected String author;
+        protected LocalDate date;
+        protected final String filename;
+        protected final String hash;
+
+        protected GenericBuilder(String filename) {
+            this.filename = filename;
+            //ToDo check this
+            this.hash = DescriptionUtility.getHash(filename);
+        }
+
+        public B thumbnail(Bitmap thumbnail) {
+            this.thumbnail = thumbnail;
+            return self();
+        }
+
+        public B author(String author){
+            this.author = author;
+            return self();
+        }
+
+        public B date(String dateDDPointMMPointYY){
+            this.date = LocalDate.parse(dateDDPointMMPointYY, DateTimeFormatter.ofPattern("dd.MM.yy"));
+            return self();
+        }
+
+        @SuppressWarnings("unchecked")
+        private final B self() {
+            return (B) this;
+        }
+
+        protected void setMetadata() {
+            if (this.author != null) {
+                if (this.date != null)
+                    this.metadata = new Metadata(this.author, this.date);
+                else
+                    this.metadata = new Metadata(this.author);
+            } else
+                this.metadata = new Metadata();
+        }
+
+        protected abstract Description build();
+    }
 }

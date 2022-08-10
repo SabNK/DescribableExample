@@ -1,7 +1,7 @@
 <diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><element><id>UMLInterface</id><coordinates><x>60</x><y>60</y><w>220</w><h>100</h></coordinates><panel_attributes>Describable
 --
 getDescriptions(): Descriptions[] 
-addDescription(desc: Description)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>330</y><w>310</w><h>340</h></coordinates><panel_attributes>/Description/
+addDescription(desc: Description)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>190</y><w>310</w><h>630</h></coordinates><panel_attributes>/Description/
 --
 -THUMBNAIL:  Bitmap
 -THUMBNAIL64: String
@@ -16,8 +16,9 @@ addDescription(desc: Description)</panel_attributes><additional_attributes></add
 -thumbnail64(image: Bitmap): String
 +getThumbnail(): Bitmap
 +getMetadata(): String
+
 {innerclass
-__Metadata__
+__+Metadata__
 --
 -author: String
 -date: LocalDate
@@ -27,11 +28,37 @@ __Metadata__
 +Metadata(author: String)
 +Metadata()
 +toString()
+innerclass}
 
+{innerclass
+/__GenericBuilder&lt;B...&gt;__/
+--
+#thumbnail: Bitmap
+#metadata: Metadata
+#author: String
+#date: LocalDate
+#FILENAME: String
+#hash: String
+--
+#GenericBuilder(filename: String)
++thumbnail(thumbnail: Bitmap): B
++author(author: String): B
++date(dateInDDPointMMPointYY: String): B
+-self(): B
+#setMetadata(): void
+/#build(): Description/
 innerclass}
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>550</x><y>320</y><w>290</w><h>370</h></coordinates><panel_attributes>Image
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>400</x><y>190</y><w>290</w><h>130</h></coordinates><panel_attributes>Image
 --
--Image(builder: Image.Builder)</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+-Image(builder: Image.Builder)
+__image(filename: String): Builder__
+
+{innerclass
++Builder
+--
+-Builder(filename: String)
++build(): Description
+innerclass}</panel_attributes><additional_attributes></additional_attributes></element></diagram>
