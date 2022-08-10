@@ -1,33 +1,41 @@
 package ru.polescanner.describableexample.domain.base;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 //ToDo Check if Image has to be serializable
 public class Image extends Description {
 
     private Image(Builder builder){
-        super(builder.thumbnail, builder.metadata, builder.filename, builder.hash);
+        super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
     }
 
-    @Override
-    public String toString64() {
-        return "";
+    public static Builder imageNew(@NonNull String filepath) {
+        return new Builder(filepath, Builder.hash(filepath));
     }
 
-    public static Builder image(@NonNull String filename) {
-        return new Builder(filename);
+    public static Builder image(@NonNull String filepath, @NonNull String hash) {
+        return new Builder(filepath, hash);
     }
 
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filename) {
-            super(filename);
+        private Builder(String filepath, String hash) {
+            super(filepath, hash);
+        }
+
+        @Override
+        protected Bitmap createThumbnail() {
+            return null;
         }
 
         @Override
         public Description build(){
             setMetadata();
+            isStored();
             return new Image(this);
         }
     }

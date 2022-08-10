@@ -7,34 +7,30 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
+
 //ToDo Check if Video has to be serializable
-public class Video /*extends Description*/ {
-    //TODO security issue
-    private final String videoHash;
+public class Video extends Description{
 
-    public Video(String videoHash) {
-        super();
-        this.videoHash = videoHash;
+    private Video(Builder builder){
+        super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
     }
 
-    //@Override
-    public String toString64() {
-        return "";
+    public static Builder video(@NonNull String filename) {
+        return new Builder(filename);
     }
 
-    public Bitmap getThumbnail(Activity activity, String path) {
+    public static Bitmap getThumbnail(Activity activity, String path) {
         Bitmap thumbnail_bitmap;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-
             thumbnail_bitmap = createThumbnail(activity, path);
-
         } else {
             thumbnail_bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
         }
         return thumbnail_bitmap;
     }
     // https://stackoverflow.com/questions/65005765/generate-thumbnail-from-sdcard-in-android-q
-    private Bitmap createThumbnail(Activity activity, String path) {
+    private static Bitmap createThumbnail(Activity activity, String path) {
         MediaMetadataRetriever mediaMetadataRetriever = null;
         Bitmap bitmap = null;
         try {
@@ -49,5 +45,18 @@ public class Video /*extends Description*/ {
             }
         }
         return bitmap;
+    }
+
+    public static final class Builder extends GenericBuilder<Video.Builder> {
+
+        private Builder(String filename) {
+            super(filename);
+        }
+
+        @Override
+        public Description build(){
+            setMetadata();
+            return new Video(this);
+        }
     }
 }

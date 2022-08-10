@@ -94,7 +94,7 @@ public class MainFragment extends Fragment {
                             Description desc;
                             if (k/2 == 0) {
                                 desc = Image
-                                        .image(filename)
+                                        .image(filename, null)
                                         .thumbnail(thumbnail)
                                         .author(authors[k])
                                         .date(dates[k])

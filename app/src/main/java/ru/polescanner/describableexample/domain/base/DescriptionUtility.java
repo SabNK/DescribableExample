@@ -30,6 +30,10 @@ public class DescriptionUtility {
         return "";
     }
 
+    public static String getHash(File file){
+        return "";
+    }
+
     public static Bitmap getThumbnail(String filename, Context context) {
         Log.d(TAG, "getThumbnail: START OPEN " + filename);
         String yourFilePath = context.getFilesDir() + "/" + filename;

@@ -6,12 +6,7 @@ import androidx.annotation.NonNull;
 public class Image2 extends Description {
 
     private Image2(Builder builder){
-        super(builder.thumbnail, builder.metadata, builder.filename, builder.hash);
-    }
-
-    @Override
-    public String toString64() {
-        return "";
+        super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
     }
 
     public static Builder image(@NonNull String filename) {

@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -16,20 +18,33 @@ public abstract class Description {
     private final Bitmap thumbnail;
     private final String thumbnail64;
     final Metadata metadata;
-    final String filename;
+    final String filepath;
     final String hash; //to provide cleaning of copies
+    protected boolean isStored;
 
     protected Description(@NonNull Bitmap thumbnail,
                           @NonNull Metadata metadata,
-                          @NonNull String filename,
-                          @NonNull String hash) {
+                          @NonNull String filepath,
+                          @NonNull String hash,
+                          boolean isStored) {
         this.thumbnail = thumbnail;
         this.thumbnail64 = "";//thumbnail64(thumbnail);
         this.metadata = metadata;
-        this.filename = filename;
+        this.filepath = filepath;
         this.hash = hash;
+        this.isStored = isStored;
     }
+/*
+    protected Description(@NonNull Metadata metadata,
+                          @NonNull String filepath,
+                          @NonNull String hash) {
+        File f = new File(filepath);
+        if (f.isFile()){
 
+        }
+
+    }
+*/
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -42,9 +57,8 @@ public abstract class Description {
         return Objects.hash(hash);
     }
 
-    public abstract String toString64();
-
-    private String thumbnail64(@NonNull Bitmap image){
+    //ToDo Move to Retrofit package
+    private static String thumbnail64(@NonNull Bitmap image){
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
@@ -61,7 +75,6 @@ public abstract class Description {
 
     public static class Metadata {
         private final String author;
-        //ToDo Check LocalDate? - Date is legacy.
         private final LocalDate date;
 
         //ToDo Checks from SecureByDesign
@@ -96,17 +109,35 @@ public abstract class Description {
         protected Description.Metadata metadata;
         protected String author;
         protected LocalDate date;
-        protected final String filename;
+        protected final String filepath;
         protected final String hash;
+        protected boolean isStored;
 
-        protected GenericBuilder(String filename) {
-            this.filename = filename;
-            //ToDo check this
-            this.hash = DescriptionUtility.getHash(filename);
+        protected GenericBuilder(@NonNull final String filepath, @Nullable final String hash) {
+            this.filepath = filepath;
+            this.hash = hash(filepath, hash);
         }
 
-        public B thumbnail(Bitmap thumbnail) {
-            this.thumbnail = thumbnail;
+        @Nullable
+        static String hash(@NonNull final String filepath) {
+            return hash(filepath, null);
+        }
+
+        private static String hash(@NonNull final String filepath, @Nullable final String hash) {
+            final String filehash;
+            if (hash == null || hash.isEmpty()) {
+                File file = new File(filepath);
+                if (file.isFile())
+                    //ToDo check and refactor
+                    filehash = DescriptionUtility.getHash(file);
+                else filehash = null;
+            } else
+                filehash = hash;
+            return filehash;
+        }
+
+        public B thumbnail(@Nullable Bitmap thumbnail) {
+            this.thumbnail = thumbnail==null ? this.createThumbnail() : thumbnail;
             return self();
         }
 
@@ -134,6 +165,13 @@ public abstract class Description {
             } else
                 this.metadata = new Metadata();
         }
+
+        protected void isStored() {
+            File file = new File(this.filepath);
+            if (file.isFile()) this.isStored = true;
+        }
+
+        protected abstract Bitmap createThumbnail();
 
         protected abstract Description build();
     }
