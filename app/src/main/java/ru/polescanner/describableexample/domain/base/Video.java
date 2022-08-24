@@ -16,8 +16,12 @@ public class Video extends Description{
         super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
     }
 
-    public static Builder video(@NonNull String filename) {
-        return new Builder(filename);
+    public static Builder video(@NonNull String filepath) {
+        return video(filepath, Builder.hash(filepath));
+    }
+
+    public static Builder video(@NonNull String filepath, @NonNull String hash) {
+        return new Builder(filepath, hash);
     }
 
     public static Bitmap getThumbnail(Activity activity, String path) {
@@ -47,10 +51,15 @@ public class Video extends Description{
         return bitmap;
     }
 
-    public static final class Builder extends GenericBuilder<Video.Builder> {
+    public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filename) {
-            super(filename);
+        private Builder(String filepath, String hash) {
+            super(filepath, hash);
+        }
+
+        @Override
+        protected Bitmap createThumbnail() {
+            return null;
         }
 
         @Override

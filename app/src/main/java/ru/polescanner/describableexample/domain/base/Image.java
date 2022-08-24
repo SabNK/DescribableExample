@@ -12,8 +12,8 @@ public class Image extends Description {
         super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
     }
 
-    public static Builder imageNew(@NonNull String filepath) {
-        return new Builder(filepath, Builder.hash(filepath));
+    public static Builder image(@NonNull String filepath) {
+        return image(filepath, Builder.hash(filepath));
     }
 
     public static Builder image(@NonNull String filepath, @NonNull String hash) {

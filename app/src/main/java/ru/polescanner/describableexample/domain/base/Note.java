@@ -4,18 +4,16 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
+public class Note extends Description{
 
-public class Image2 extends Description {
-
-    private Image2(Builder builder){
+    private Note(Builder builder){
         super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
     }
-
-    public static Builder image(@NonNull String filepath) {
-        return image(filepath, Builder.hash(filepath));
+    public static Builder note(@NonNull String filepath) {
+        return note(filepath, Builder.hash(filepath));
     }
 
-    public static Builder image(@NonNull String filepath, @NonNull String hash) {
+    public static Builder note(@NonNull String filepath, @NonNull String hash) {
         return new Builder(filepath, hash);
     }
 
@@ -35,7 +33,8 @@ public class Image2 extends Description {
         public Description build(){
             setMetadata();
             isStored();
-            return new Image2(this);
+            return new Note(this);
         }
     }
+
 }
