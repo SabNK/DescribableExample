@@ -7,21 +7,28 @@ import androidx.annotation.NonNull;
 public class Note extends Description{
 
     private Note(Builder builder){
-        super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
+        super(builder.thumbnail,
+              builder.metadata,
+              builder.filepath,
+              builder.hash,
+              builder.isStored,
+              builder.utility);
     }
-    public static Builder note(@NonNull String filepath) {
-        return note(filepath, Builder.hash(filepath));
+    public static Builder note(@NonNull String filepath, @NonNull DescriptionIO utility) {
+        return note(filepath, utility.hash(filepath, null), utility);
     }
 
-    public static Builder note(@NonNull String filepath, @NonNull String hash) {
-        return new Builder(filepath, hash);
+    public static Builder note(@NonNull String filepath,
+                               @NonNull String hash,
+                               @NonNull DescriptionIO utility) {
+        return new Builder(filepath, hash, utility);
     }
 
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash) {
-            super(filepath, hash);
+        private Builder(String filepath, String hash, DescriptionIO utility) {
+            super(filepath, hash, utility);
         }
 
         @Override

@@ -13,58 +13,41 @@ import androidx.annotation.NonNull;
 public class Video extends Description{
 
     private Video(Builder builder){
-        super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
+        super(builder.thumbnail,
+              builder.metadata,
+              builder.filepath,
+              builder.hash,
+              builder.isStored,
+              builder.utility);
     }
 
-    public static Builder video(@NonNull String filepath) {
-        return video(filepath, Builder.hash(filepath));
+    public static Builder video(@NonNull String filepath, @NonNull DescriptionIO utility) {
+        return video(filepath, utility.hash(filepath, null), utility);
     }
 
-    public static Builder video(@NonNull String filepath, @NonNull String hash) {
-        return new Builder(filepath, hash);
+    public static Builder video(@NonNull String filepath,
+                                @NonNull String hash,
+                                @NonNull DescriptionIO utility) {
+        return new Builder(filepath, hash, utility);
     }
 
-    public static Bitmap getThumbnail(Activity activity, String path) {
-        Bitmap thumbnail_bitmap;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            thumbnail_bitmap = createThumbnail(activity, path);
-        } else {
-            thumbnail_bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
-        }
-        return thumbnail_bitmap;
-    }
-    // https://stackoverflow.com/questions/65005765/generate-thumbnail-from-sdcard-in-android-q
-    private static Bitmap createThumbnail(Activity activity, String path) {
-        MediaMetadataRetriever mediaMetadataRetriever = null;
-        Bitmap bitmap = null;
-        try {
-            mediaMetadataRetriever = new MediaMetadataRetriever();
-            mediaMetadataRetriever.setDataSource(activity, Uri.parse(path));
-            bitmap = mediaMetadataRetriever.getFrameAtTime(1000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (mediaMetadataRetriever != null) {
-                mediaMetadataRetriever.release();
-            }
-        }
-        return bitmap;
-    }
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash) {
-            super(filepath, hash);
+        private Builder(String filepath, String hash, DescriptionIO utility) {
+            super(filepath, hash, utility);
         }
 
         @Override
         protected Bitmap createThumbnail() {
-            return null;
+            return utility.createVideoThumbnail(filepath, 1000);
         }
 
         @Override
         public Description build(){
             setMetadata();
+            isStored();
+            checkThumbnail();
             return new Video(this);
         }
     }

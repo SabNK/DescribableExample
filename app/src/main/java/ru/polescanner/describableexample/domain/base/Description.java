@@ -1,6 +1,9 @@
 package ru.polescanner.describableexample.domain.base;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
@@ -21,30 +24,23 @@ public abstract class Description {
     final String filepath;
     final String hash; //to provide cleaning of copies
     protected boolean isStored;
+    protected DescriptionIO utility;
 
     protected Description(@NonNull Bitmap thumbnail,
                           @NonNull Metadata metadata,
                           @NonNull String filepath,
                           @NonNull String hash,
-                          boolean isStored) {
+                          boolean isStored,
+                          @NonNull DescriptionIO utility) {
         this.thumbnail = thumbnail;
         this.thumbnail64 = "";//thumbnail64(thumbnail);
         this.metadata = metadata;
         this.filepath = filepath;
         this.hash = hash;
         this.isStored = isStored;
+        this.utility = utility;
     }
-/*
-    protected Description(@NonNull Metadata metadata,
-                          @NonNull String filepath,
-                          @NonNull String hash) {
-        File f = new File(filepath);
-        if (f.isFile()){
 
-        }
-
-    }
-*/
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,6 +67,16 @@ public abstract class Description {
 
     public String getMetadata() {
         return metadata.toString();
+    }
+
+    public Intent view() throws WeHaveNoFile, WeFacedExternalStorageProblems{
+        if (!isStored) throw new WeHaveNoFile("We need to download file. Do it immediate?");
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setType("image/*");
+        Uri data = utility.writeExternalStorage(filepath);
+        if (data == null) return null;
+        intent.setData(data);
+        return intent;
     }
 
     public static class Metadata {
@@ -112,28 +118,14 @@ public abstract class Description {
         protected final String filepath;
         protected final String hash;
         protected boolean isStored;
+        protected DescriptionIO utility;
 
-        protected GenericBuilder(@NonNull final String filepath, @Nullable final String hash) {
+        protected GenericBuilder(@NonNull final String filepath,
+                                 @Nullable final String hash,
+                                 @NonNull final DescriptionIO utility) {
             this.filepath = filepath;
-            this.hash = hash(filepath, hash);
-        }
-
-        @Nullable
-        static String hash(@NonNull final String filepath) {
-            return hash(filepath, null);
-        }
-
-        private static String hash(@NonNull final String filepath, @Nullable final String hash) {
-            final String filehash;
-            if (hash == null || hash.isEmpty()) {
-                File file = new File(filepath);
-                if (file.isFile())
-                    //ToDo check and refactor
-                    filehash = DescriptionUtility.getHash(file);
-                else filehash = null;
-            } else
-                filehash = hash;
-            return filehash;
+            this.utility = utility;
+            this.hash = utility.hash(filepath, hash);
         }
 
         public B thumbnail(@Nullable Bitmap thumbnail) {
@@ -167,12 +159,19 @@ public abstract class Description {
         }
 
         protected void isStored() {
-            File file = new File(this.filepath);
-            if (file.isFile()) this.isStored = true;
+            if (utility.isFileStored(filepath))
+                this.isStored = true;
         }
+
+        protected void checkThumbnail(){
+            if (thumbnail == null)
+                thumbnail = createThumbnail();
+        }
+
 
         protected abstract Bitmap createThumbnail();
 
         protected abstract Description build();
+
     }
 }

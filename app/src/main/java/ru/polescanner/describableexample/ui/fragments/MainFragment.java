@@ -23,9 +23,10 @@ import com.bumptech.glide.request.transition.Transition;
 import ru.polescanner.describableexample.R;
 import ru.polescanner.describableexample.adapters.DescriptionAdapter;
 import ru.polescanner.describableexample.domain.base.Description;
+import ru.polescanner.describableexample.domain.base.DescriptionIO;
 import ru.polescanner.describableexample.domain.base.DescriptionUtility;
-import ru.polescanner.describableexample.domain.base.Image;
-import ru.polescanner.describableexample.domain.base.Image2;
+import ru.polescanner.describableexample.domain.base.ImagePortrait;
+import ru.polescanner.describableexample.domain.base.ImageLandscape;
 import ru.polescanner.describableexample.ui.viewmodels.MainViewModel;
 
 public class MainFragment extends Fragment {
@@ -91,18 +92,19 @@ public class MainFragment extends Fragment {
                                                                                      dates[k]);
                             String filename = DescriptionUtility.saveBitmapToFile(resource, view.getContext());
                             Bitmap thumbnail = DescriptionUtility.getThumbnail(filename, view.getContext());
+                            DescriptionIO utility = new DescriptionUtility(view.getContext());
                             Description desc;
                             if (k/2 == 0) {
-                                desc = Image
-                                        .image(filename, null)
+                                desc = ImagePortrait
+                                        .image(filename, null, utility)
                                         .thumbnail(thumbnail)
                                         .author(authors[k])
                                         .date(dates[k])
                                         .build();
                             }
                             else {
-                                desc = Image2
-                                        .image(filename)
+                                desc = ImageLandscape
+                                        .image(filename, utility)
                                         .thumbnail(thumbnail)
                                         .author(authors[k])
                                         .date(dates[k])

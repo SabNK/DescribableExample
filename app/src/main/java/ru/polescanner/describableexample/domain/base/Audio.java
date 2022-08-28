@@ -7,21 +7,28 @@ import androidx.annotation.NonNull;
 public class Audio extends Description{
 
     private Audio(Builder builder){
-        super(builder.thumbnail, builder.metadata, builder.filepath, builder.hash, builder.isStored);
+        super(builder.thumbnail,
+              builder.metadata,
+              builder.filepath,
+              builder.hash,
+              builder.isStored,
+              builder.utility);
     }
-    public static Builder audio(@NonNull String filepath) {
-        return audio(filepath, Builder.hash(filepath));
+    public static Builder audio(@NonNull String filepath, @NonNull DescriptionIO utility) {
+        return audio(filepath, utility.hash(filepath, null), utility);
     }
 
-    public static Builder audio(@NonNull String filepath, @NonNull String hash) {
-        return new Builder(filepath, hash);
+    public static Builder audio(@NonNull String filepath,
+                                @NonNull String hash,
+                                @NonNull DescriptionIO utility) {
+        return new Builder(filepath, hash, utility);
     }
 
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash) {
-            super(filepath, hash);
+        private Builder(String filepath, String hash, DescriptionIO utility) {
+            super(filepath, hash, utility);
         }
 
         @Override
@@ -33,6 +40,7 @@ public class Audio extends Description{
         public Description build(){
             setMetadata();
             isStored();
+            checkThumbnail();
             return new Audio(this);
         }
     }

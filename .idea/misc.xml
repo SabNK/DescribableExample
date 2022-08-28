@@ -3,6 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable-v24/ic_add_description.xml" value="0.15" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.15" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable/ic_launcher_background.xml" value="0.15" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable/ic_note.xml" value="0.15" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable/volume_high.xml" value="0.15" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_add_stub.xml" value="0.14010416666666667" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_audio.xml" value="0.14010416666666667" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_image_landscape.xml" value="0.14010416666666667" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_image_portrait.xml" value="0.14010416666666667" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_note.xml" value="0.14010416666666667" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_video.xml" value="0.14010416666666667" />
+        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_image.xml" value="0.17603850050658562" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/drawable-v24/pen_plus.xml" value="0.1915" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1985" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/activity_main.xml" value="0.17806484295845998" />

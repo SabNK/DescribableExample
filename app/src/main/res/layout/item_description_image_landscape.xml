@@ -13,7 +13,7 @@
         app:cardElevation="1dp"
         app:cardBackgroundColor="@color/teal_200"
         android:layout_centerInParent="true"
-        android:id="@+id/cvDescriptionItem2"
+        android:id="@+id/cvDescriptionImageLandscapeItem"
 
         >
 
@@ -22,7 +22,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/ivDescriptionThumbnail2"
+                android:id="@+id/ivDescriptionImageLandscapeThumbnail"
                 android:layout_width="50dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="4dp"
@@ -31,10 +31,10 @@
                 />
 
             <TextView
-                android:id="@+id/tvDescriptionMetadata2"
+                android:id="@+id/tvDescriptionImageLandscapeMetadata"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_below="@id/ivDescriptionThumbnail2"
+                android:layout_below="@id/ivDescriptionImageLandscapeThumbnail"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:text="@string/description_metadata_author_date"
