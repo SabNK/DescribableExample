@@ -2,10 +2,12 @@ package ru.polescanner.describableexample.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -17,10 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -173,18 +178,63 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         ImageView ivDescriptionThumbnail;
         TextView tvDescriptionMetadata;
         CardView cvDescriptionItem;
+        ImageView ivDescriptionIsStored;
+        CircularProgressIndicator cpiDescriptionDownload;
 
         public DescriptionViewHolder(@NonNull View itemView) {
             super(itemView);
+            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionThumbnail);
+            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionMetadata);
+            ivDescriptionIsStored = itemView.findViewById(R.id.ivDescriptionIsStored);
+            cpiDescriptionDownload = itemView.findViewById(R.id.cpiDescriptionDownload);
         }
-     }
+
+        private class DownloadAsyncTask extends AsyncTask<Integer, Integer, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                cpiDescriptionDownload.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected String doInBackground(Integer... integers) {
+                for (int i = 0; i < integers[0]; i++) {
+                    publishProgress((i*100)/integers[0]);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return "Finished!";
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                cpiDescriptionDownload.setProgress(values[0]);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                cpiDescriptionDownload.setProgress(0);
+                cpiDescriptionDownload.setVisibility(View.INVISIBLE);
+            }
+
+
+        }
+    }
+
+
+
 
     public class ImagePortraitViewHolder extends DescriptionViewHolder {
 
         public ImagePortraitViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionImagePortraitThumbnail);
-            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionImagePortraitMetadata);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionImagePortraitItem);
         }
     }
@@ -193,8 +243,6 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         public ImageLandscapeViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionImageLandscapeThumbnail);
-            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionImageLandscapeMetadata);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionImageLandscapeItem);
         }
     }
@@ -203,8 +251,6 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         public VideoViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionVideoThumbnail);
-            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionVideoMetadata);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionVideoItem);
         }
     }
@@ -213,8 +259,6 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         public AudioViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionAudioThumbnail);
-            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionAudioMetadata);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionAudioItem);
         }
     }
@@ -223,8 +267,6 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionNoteThumbnail);
-            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionNoteMetadata);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionNoteItem);
         }
     }
@@ -233,8 +275,6 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         public AddDescriptionStubViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivDescriptionThumbnail = itemView.findViewById(R.id.ivDescriptionAddStubThumbnail);
-            tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionAddStubMetadata);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionAddStubItem);
         }
 
@@ -278,20 +318,24 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            Intent intent;
-            try {
-                intent = description.view();
-            } catch (WeHaveNoFile ex) {
-                Toast.makeText(context, ex.getMessage()
-                        , Toast.LENGTH_SHORT).show();
-                return true;
-            } catch (WeFacedExternalStorageProblems ex) {
-                Toast.makeText(context, ex.getMessage()
-                        , Toast.LENGTH_SHORT).show();
-                return true;
+            if (!description.isStored()) {
+                Intent intent;
+                try {
+                    intent = description.view();
+                } catch (WeHaveNoFile ex) {
+                    Toast.makeText(context, ex.getMessage()
+                            , Toast.LENGTH_SHORT).show();
+                    return true;
+                } catch (WeFacedExternalStorageProblems ex) {
+                    Toast.makeText(context, ex.getMessage()
+                            , Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                context.startActivity(intent);
+                Log.d(TAG, "onSingleTapConfirmed: ");
+
             }
-            context.startActivity(intent);
-            Log.d(TAG, "onSingleTapConfirmed: ");
+            else showDescriptionDownloadDialog();
             return true;
         }
 
@@ -334,6 +378,37 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         private void onSwipeDown() {
             Toast.makeText(context, description.getMetadata() + " On Swipe Down", Toast.LENGTH_SHORT).show();
+        }
+
+
+        private void showDescriptionDownloadDialog() {
+            AlertDialog dialog = new MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
+                    .setTitle("Description is not available?")
+                    .setMessage("Do you want to try to download data from cloud via current network? "
+                                        + "it might take a while in a background")
+                    .setIcon(R.drawable.cloud_download_outline)
+                    .setPositiveButton("Yes",  new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startAsyncTask();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
+
+        public void startAsyncTask(View v){
+            DescriptionViewHolder.DownloadAsyncTask task = new DescriptionViewHolder.DownloadAsyncTask();
+            task.execute(10);
+        }
+        private void downloadImmediately(Description description) {
+
         }
     }
 

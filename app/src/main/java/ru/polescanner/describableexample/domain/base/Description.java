@@ -69,6 +69,10 @@ public abstract class Description {
         return metadata.toString();
     }
 
+    public boolean isStored() {
+        return isStored;
+    }
+
     public Intent view() throws WeHaveNoFile, WeFacedExternalStorageProblems{
         if (!isStored) throw new WeHaveNoFile("We need to download file. Do it immediate?");
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -108,6 +112,7 @@ public abstract class Description {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
             return this.author + " " + this.date.format(formatter);
         }
+
     }
 
     abstract static class GenericBuilder<B extends GenericBuilder<B>> {

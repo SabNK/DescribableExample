@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="1dp">
 
     <androidx.cardview.widget.CardView
@@ -14,36 +15,31 @@
         app:cardBackgroundColor="@color/purple_200"
         android:layout_centerInParent="true"
         android:id="@+id/cvDescriptionImagePortraitItem"
-
         >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/ivDescriptionImagePortraitThumbnail"
+            <include
+                android:id="@+id/lThumbnail"
+                layout="@layout/description_thumbnail_with_progress"
                 android:layout_width="100dp"
                 android:layout_height="150dp"
-                android:layout_marginTop="4dp"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_launcher_background"
                 />
 
-            <TextView
-                android:id="@+id/tvDescriptionImagePortraitMetadata"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_below="@id/ivDescriptionImagePortraitThumbnail"
+            <include
+                android:id="@+id/lMetadata"
+                layout="@layout/description_metadata"
+                android:layout_below="@id/lThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:text="@string/description_metadata_author_date"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="8sp"
-                android:autoSizeMaxTextSize="15sp"
                 />
+
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

@@ -3,24 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable-v24/ic_add_description.xml" value="0.15" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.15" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable/ic_launcher_background.xml" value="0.15" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable/ic_note.xml" value="0.15" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/drawable/volume_high.xml" value="0.15" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_add_stub.xml" value="0.14010416666666667" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_audio.xml" value="0.14010416666666667" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_image_landscape.xml" value="0.14010416666666667" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_image_portrait.xml" value="0.14010416666666667" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_note.xml" value="0.14010416666666667" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_description_video.xml" value="0.14010416666666667" />
-        <entry key="..\:/SD/PoleScanner/describable/app/src/main/res/layout/item_image.xml" value="0.17603850050658562" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/drawable-v24/pen_plus.xml" value="0.1915" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/drawable/circle.xml" value="0.146" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/drawable/cloud_download_outline.xml" value="0.127" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1985" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/activity_main.xml" value="0.17806484295845998" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/description_metadata.xml" value="0.18854166666666666" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/description_thumbnail_with_progress.xml" value="0.2" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/fragment_main.xml" value="0.17806484295845998" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description.xml" value="0.18" />
         <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description2.xml" value="0.20742753623188406" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description_add_stub.xml" value="0.18958333333333333" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description_audio.xml" value="0.18958333333333333" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description_image_landscape.xml" value="0.1762917933130699" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description_image_portrait.xml" value="0.1762917933130699" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description_note.xml" value="0.19972826086956522" />
+        <entry key="..\:/SD/android/study/youtube/Stevdza-San/DescribableExample/app/src/main/res/layout/item_description_video.xml" value="0.18958333333333333" />
       </map>
     </option>
   </component>
