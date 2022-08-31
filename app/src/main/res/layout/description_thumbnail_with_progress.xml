@@ -34,16 +34,19 @@
         android:id="@+id/cpiDescriptionDownload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:trackThickness="2dp"
+        app:trackThickness="4dp"
         app:indicatorColor="?colorSecondary"
+        app:trackColor="?colorPrimary"
         app:layout_constraintBottom_toBottomOf="@id/guidelineHorizontal"
         app:layout_constraintEnd_toEndOf="@id/guidelineVertical"
         app:layout_constraintStart_toStartOf="@id/guidelineVertical"
         app:layout_constraintTop_toTopOf="@id/guidelineHorizontal"
         app:showAnimationBehavior="inward"
-        app:indicatorSize = "40dp"
+        app:indicatorSize = "30dp"
         android:visibility="invisible"
         tools:visibility="visible"
+        android:indeterminate="true"
+        android:contentDescription="STRING"
         />
 
     <ImageView

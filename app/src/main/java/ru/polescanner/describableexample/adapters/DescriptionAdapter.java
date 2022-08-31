@@ -28,6 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -111,7 +112,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
                 .load(currDescription.getThumbnail())
                 .into(holder.ivDescriptionThumbnail);
         holder.tvDescriptionMetadata.setText(currDescription.getMetadata());
-        gestureDetector = new GestureDetector(context, new DescriptionGestureListener());
+        gestureDetector = new GestureDetector(context, new DescriptionGestureListener(holder));
         holder.cvDescriptionItem.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -188,47 +189,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             ivDescriptionIsStored = itemView.findViewById(R.id.ivDescriptionIsStored);
             cpiDescriptionDownload = itemView.findViewById(R.id.cpiDescriptionDownload);
         }
-
-        private class DownloadAsyncTask extends AsyncTask<Integer, Integer, String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                cpiDescriptionDownload.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            protected String doInBackground(Integer... integers) {
-                for (int i = 0; i < integers[0]; i++) {
-                    publishProgress((i*100)/integers[0]);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return "Finished!";
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                super.onProgressUpdate(values);
-                cpiDescriptionDownload.setProgress(values[0]);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-                cpiDescriptionDownload.setProgress(0);
-                cpiDescriptionDownload.setVisibility(View.INVISIBLE);
-            }
-
-
-        }
     }
-
-
 
 
     public class ImagePortraitViewHolder extends DescriptionViewHolder {
@@ -294,6 +255,12 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     private class DescriptionGestureListener extends GestureDetector.SimpleOnGestureListener{
         private static final int DESCRIPTION_SWIPE_THRESHOLD = 50;
         private static final int DESCRIPTION_SWIPE_VELOCITY_THRESHOLD = 50;
+        DescriptionViewHolder holder;
+
+        public DescriptionGestureListener(DescriptionViewHolder holder) {
+            super();
+            this.holder = holder;
+        }
 
         //needed to consume events - see
         // https://stackoverflow.com/questions/23122411/the-meaning-of-returning-false-from-ongesturelistener-ondown
@@ -403,8 +370,8 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             dialog.show();
         }
 
-        public void startAsyncTask(View v){
-            DescriptionViewHolder.DownloadAsyncTask task = new DescriptionViewHolder.DownloadAsyncTask();
+        public void startAsyncTask(){
+            DownloadAsyncTask task = new DownloadAsyncTask(holder, context);
             task.execute(10);
         }
         private void downloadImmediately(Description description) {
@@ -413,4 +380,65 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     }
 
     private enum SwipeDirection {UP, RIGHT, DOWN, LEFT, NOT_A_SWIPE};
+
+    private static class DownloadAsyncTask extends AsyncTask<Integer, Integer, String> {
+
+        private WeakReference<DescriptionViewHolder> dvhWeakReference;
+        private WeakReference<Context> contextWeakReference;
+
+        DownloadAsyncTask(DescriptionViewHolder descriptionViewHolder, Context context) {
+            this.dvhWeakReference = new WeakReference<>(descriptionViewHolder);
+            this.contextWeakReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG, "onPreExecute: ");
+            super.onPreExecute();
+            DescriptionViewHolder dvh = dvhWeakReference.get();
+            if (dvh == null ) return;
+            dvh.cpiDescriptionDownload.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Integer... integers) {
+            Log.d(TAG, "doInBackground: ");
+            for (int i = 0; i < integers[0]; i++) {
+                publishProgress((i* 100)/integers[0]);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return "Finished!";
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.d(TAG, "onProgressUpdate: ");
+            DescriptionViewHolder dvh = dvhWeakReference.get();
+            if (dvh == null ) return;
+            dvh.cpiDescriptionDownload.setProgressCompat(values[0], true);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d(TAG, "onPostExecute: ");
+            DescriptionViewHolder dvh = dvhWeakReference.get();
+            Context context = contextWeakReference.get();
+            if (dvh == null || context == null ) {
+                Log.d(TAG, "onPostExecute: RETURN");
+                return;
+            }
+            Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onPostExecute: TOAST");
+
+            dvh.cpiDescriptionDownload.setProgress(0);
+            dvh.cpiDescriptionDownload.setIndeterminate(true);
+            dvh.cpiDescriptionDownload.setVisibility(View.INVISIBLE);
+        }
+    }
 }
