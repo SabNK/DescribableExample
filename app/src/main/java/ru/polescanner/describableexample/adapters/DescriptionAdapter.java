@@ -79,9 +79,9 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     private Context context;
     private List<Description> descriptions;
     private Description description;
+    private int position_;
     private GestureDetector gestureDetector;
 
-    //ToDo stub to be the last item - SortedList???
     public DescriptionAdapter(Context context, List<Description> descriptions) {
         this.context = context;
         this.descriptions = descriptions;
@@ -117,6 +117,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 description = descriptions.get(holder.getAdapterPosition());
+                position_ =  holder.getAdapterPosition();
                 return gestureDetector.onTouchEvent(event);
             }
         });
@@ -190,7 +191,6 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             cpiDescriptionDownload = itemView.findViewById(R.id.cpiDescriptionDownload);
         }
     }
-
 
     public class ImagePortraitViewHolder extends DescriptionViewHolder {
 
@@ -347,12 +347,11 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             Toast.makeText(context, description.getMetadata() + " On Swipe Down", Toast.LENGTH_SHORT).show();
         }
 
-
         private void showDescriptionDownloadDialog() {
             AlertDialog dialog = new MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
                     .setTitle("Description is not available?")
-                    .setMessage("Do you want to try to download data from cloud via current network? "
-                                        + "it might take a while in a background")
+                    .setMessage("Do you want to try to download data from cloud via current network?"
+                                        + " it might take a while in a background")
                     .setIcon(R.drawable.cloud_download_outline)
                     .setPositiveButton("Yes",  new DialogInterface.OnClickListener() {
                         @Override
@@ -371,7 +370,8 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         }
 
         public void startAsyncTask(){
-            DownloadAsyncTask task = new DownloadAsyncTask(holder, context);
+            DownloadAsyncTask task = new DownloadAsyncTask(holder, context, position_);
+            Log.d(TAG, "startAsyncTask: " + position_);
             task.execute(10);
         }
         private void downloadImmediately(Description description) {
@@ -384,19 +384,30 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     private static class DownloadAsyncTask extends AsyncTask<Integer, Integer, String> {
 
         private WeakReference<DescriptionViewHolder> dvhWeakReference;
+        private WeakReference<DescriptionAdapter> daWeakReference;
         private WeakReference<Context> contextWeakReference;
+        private WeakReference<Integer> positionWeakReference;
 
-        DownloadAsyncTask(DescriptionViewHolder descriptionViewHolder, Context context) {
+        DownloadAsyncTask(DescriptionViewHolder descriptionViewHolder, Context context,
+                          Integer position, DescriptionAdapter descriptionAdapter) {
             this.dvhWeakReference = new WeakReference<>(descriptionViewHolder);
             this.contextWeakReference = new WeakReference<>(context);
+            this.positionWeakReference = new WeakReference<>(position);
+            this.daWeakReference = new WeakReference<>(descriptionAdapter);
         }
 
         @Override
         protected void onPreExecute() {
             Log.d(TAG, "onPreExecute: ");
             super.onPreExecute();
-            DescriptionViewHolder dvh = dvhWeakReference.get();
+
+            DescriptionAdapter da = daWeakReference.get();
+            if (da == null ) return;
+            DescriptionViewHolder dvh = da.findViewHolderForAdapterPosition(adapterPosition);
+            int pos = positionWeakReference.get();
+            Log.d(TAG, "onPreExecute: position " + pos);
             if (dvh == null ) return;
+
             dvh.cpiDescriptionDownload.setVisibility(View.VISIBLE);
         }
 

@@ -6,10 +6,10 @@ addDescription(desc: Description)</panel_attributes><additional_attributes></add
 -THUMBNAIL:  Bitmap
 -THUMBNAIL64: String
 #metadata: Metadata
-#filename: String
+#filepath: String
 #hash: String
 --
-#Description(thumbnail, metadata, filename, hash)
+#Description(thumbnail, metadata, filepath, hash)
 +equals(o: Object): boolean
 +hashCode(): int
 /+toString64() : String/
