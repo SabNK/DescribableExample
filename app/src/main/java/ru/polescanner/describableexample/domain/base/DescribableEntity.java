@@ -1,12 +1,10 @@
 package ru.polescanner.describableexample.domain.base;
 
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class DescribableEntity implements Describable{
-    List<Description> descriptions;
+    List<DescriptionImpl> descriptions;
     Image avatar;
 
     public DescribableEntity() {
@@ -14,12 +12,12 @@ public class DescribableEntity implements Describable{
     }
 
     @Override
-    public Description getAvatar() {
+    public DescriptionImpl getAvatar() {
         return avatar;
     }
 
     @Override
-    public void setAvatar(Description desc) {
+    public void setAvatar(DescriptionImpl desc) {
         if (desc instanceof Image) {
             if (!descriptions.contains(desc))
                 addDescription(desc);
@@ -28,12 +26,12 @@ public class DescribableEntity implements Describable{
     }
 
     @Override
-    public List<Description> getDescriptions() {
+    public List<DescriptionImpl> getDescriptions() {
         return descriptions;
     }
 
     @Override
-    public void addDescription(Description desc) {
+    public void addDescription(DescriptionImpl desc) {
         descriptions.add(desc);
     }
 

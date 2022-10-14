@@ -1,21 +1,19 @@
 package ru.polescanner.describableexample.domain.base;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
-public class Note extends Description{
+public class Note extends DescriptionImpl {
 
     private Note(Builder builder){
         super(builder.thumbnail,
               builder.metadata,
-              builder.filepath,
-              builder.hash,
-              builder.isStored,
-              builder.utility);
+              builder.file);
     }
-    public static Builder note(@NonNull String filepath, @NonNull DescriptionIO utility) {
-        return note(filepath, utility.hash(filepath, null), utility);
+    public static Builder note(@NonNull String filepath, @NonNull Context context) {
+        return note(filepath, null, context);
     }
 
     public static Builder note(@NonNull String filepath,
@@ -37,7 +35,7 @@ public class Note extends Description{
         }
 
         @Override
-        public Description build(){
+        public DescriptionImpl build(){
             setMetadata();
             isStored();
             return new Note(this);

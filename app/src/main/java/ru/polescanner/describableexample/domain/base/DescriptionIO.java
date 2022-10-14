@@ -12,6 +12,8 @@ public interface DescriptionIO {
 
     boolean isFileStored(@NonNull final String filepath);
 
+    boolean isNotCorrupted(@NonNull final String filepath, @NonNull final String hash);
+
     @Nullable
     Bitmap getImage(@NonNull final String filepath);
 

@@ -48,6 +48,16 @@ public class DescriptionUtility implements DescriptionIO{
         return calculatedHash;
     }
 
+    @Override
+    public boolean isNotCorrupted(@NonNull final String filepath, @NonNull final String hash) throws FileNotFoundException {
+        if (isFileStored(filepath)) {
+            return DescriptionUtility.getHash(filepath).equals(hash);
+        }
+        else {
+            throw new FileNotFoundException("File is missed!");
+        }
+    }
+
     @Nullable
     public String hash(@NonNull final String filepath) {
         return hash(filepath, null);

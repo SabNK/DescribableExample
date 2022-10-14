@@ -22,7 +22,7 @@ import com.bumptech.glide.request.transition.Transition;
 
 import ru.polescanner.describableexample.R;
 import ru.polescanner.describableexample.adapters.DescriptionAdapter;
-import ru.polescanner.describableexample.domain.base.Description;
+import ru.polescanner.describableexample.domain.base.DescriptionImpl;
 import ru.polescanner.describableexample.domain.base.DescriptionIO;
 import ru.polescanner.describableexample.domain.base.DescriptionUtility;
 import ru.polescanner.describableexample.domain.base.ImagePortrait;
@@ -88,12 +88,12 @@ public class MainFragment extends Fragment {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource,
                                                     @Nullable Transition<? super Bitmap> transition) {
-                            Description.Metadata metadata = new Description.Metadata(authors[k],
-                                                                                     dates[k]);
+                            DescriptionImpl.Metadata metadata = new DescriptionImpl.Metadata(authors[k],
+                                                                                             dates[k]);
                             String filename = DescriptionUtility.saveBitmapToFile(resource, view.getContext());
                             Bitmap thumbnail = DescriptionUtility.getThumbnail(filename, view.getContext());
                             DescriptionIO utility = new DescriptionUtility(view.getContext());
-                            Description desc;
+                            DescriptionImpl desc;
                             if (k/2 == 0) {
                                 desc = ImagePortrait
                                         .image(filename, null, utility)

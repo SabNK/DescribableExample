@@ -5,16 +5,16 @@ import java.util.List;
 
 public interface Describable {
 
-    Description getAvatar();
+    DescriptionImpl getAvatar();
 
-    default List<Description> getDescriptions(){
+    default List<DescriptionImpl> getDescriptions(){
         //ToDo attempt to DRY
-        List<Description> describable = new ArrayList<>();
+        List<DescriptionImpl> describable = new ArrayList<>();
         return describable;
     }
 
-    void addDescription(Description desc);
+    void addDescription(DescriptionImpl desc);
 
-    void setAvatar(Description desc);
+    void setAvatar(DescriptionImpl desc);
 
 }

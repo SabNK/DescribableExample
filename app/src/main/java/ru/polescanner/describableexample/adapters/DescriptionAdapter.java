@@ -27,17 +27,17 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ru.polescanner.describableexample.R;
-import ru.polescanner.describableexample.domain.base.Description;
+import ru.polescanner.describableexample.domain.base.DescriptionImpl;
 import ru.polescanner.describableexample.domain.base.DescriptionIO;
 import ru.polescanner.describableexample.domain.base.DescriptionUtility;
 import ru.polescanner.describableexample.domain.base.DevConstants;
@@ -77,15 +77,15 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     }
 
     private Context context;
-    private List<Description> descriptions;
-    private Description description;
-    private int position_;
-    private GestureDetector gestureDetector;
+    private List<DescriptionImpl> descriptions;
+    private DescriptionImpl description;
+    private List<GestureDetector> gestureDetectors;
 
-    public DescriptionAdapter(Context context, List<Description> descriptions) {
+    public DescriptionAdapter(Context context, List<DescriptionImpl> descriptions) {
         this.context = context;
         this.descriptions = descriptions;
         this.descriptions.add(0, createAddDescriptionStub(context));
+        this.gestureDetectors = new ArrayList<>();
     }
 
     @Override
@@ -106,18 +106,19 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     public void onBindViewHolder(@NonNull final DescriptionViewHolder holder,
                                  @SuppressLint("RecyclerView") final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
-        Description currDescription = descriptions.get(position);
+        DescriptionImpl currDescription = descriptions.get(position);
         Glide.with(context)
                 .asBitmap()
-                .load(currDescription.getThumbnail())
+                .load(currDescription.thumbnail())
                 .into(holder.ivDescriptionThumbnail);
-        holder.tvDescriptionMetadata.setText(currDescription.getMetadata());
-        gestureDetector = new GestureDetector(context, new DescriptionGestureListener(holder));
+        holder.tvDescriptionMetadata.setText(currDescription.metadata());
+        gestureDetectors.add(new GestureDetector(context, new DescriptionGestureListener(holder)));
         holder.cvDescriptionItem.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                description = descriptions.get(holder.getAdapterPosition());
-                position_ =  holder.getAdapterPosition();
+                int position = holder.getAdapterPosition();
+                description = descriptions.get(position);
+                GestureDetector gestureDetector = gestureDetectors.get(position);
                 return gestureDetector.onTouchEvent(event);
             }
         });
@@ -155,14 +156,14 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         return d;
     }
 
-    private Description createAddDescriptionStub(Context context){
+    private DescriptionImpl createAddDescriptionStub(Context context){
         Bitmap bm = getBitmap(R.drawable.ic_add_description);
-        Description.Metadata metadata = new Description.Metadata("ADD NOW!");
+        DescriptionImpl.Metadata metadata = new DescriptionImpl.Metadata("ADD NOW!");
         String filename = DescriptionUtility.saveBitmapToFile(bm, context);
         DescriptionIO utility = new DescriptionUtility(context);
-        return new AddDescriptionStub(DescriptionUtility.getThumbnail(filename, context),
-                                      metadata, filename,
-                                      DescriptionUtility.getHash(filename), utility);
+        return new AddDescriptionImplStub(DescriptionUtility.getThumbnail(filename, context),
+                                          metadata, filename,
+                                          DescriptionUtility.getHash(filename), utility);
     };
 
     private Bitmap getBitmap(int drawableRes) {
@@ -242,12 +243,12 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     }
 
     //ToDo make a res with an icon +add multimedia
-    private class AddDescriptionStub extends Description {
-        private AddDescriptionStub(@NonNull Bitmap thumbnail,
-                                   @NonNull Metadata metadata,
-                                   @NonNull String filename,
-                                   @NonNull String hash,
-                                   @NonNull DescriptionIO utility) {
+    private class AddDescriptionImplStub extends DescriptionImpl {
+        private AddDescriptionImplStub(@NonNull Bitmap thumbnail,
+                                       @NonNull Metadata metadata,
+                                       @NonNull String filename,
+                                       @NonNull String hash,
+                                       @NonNull DescriptionIO utility) {
             super(thumbnail, metadata, filename, hash, true, utility);
         }
     }
@@ -272,13 +273,13 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         //ToDo setAvatar
         @Override
         public void onLongPress(MotionEvent e) {
-            Toast.makeText(context, description.getMetadata() + " Long Press", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, description.metadata() + " Long Press", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "onLongPress: ");
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            Toast.makeText(context, description.getMetadata() + " Double Tap", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, description.metadata() + " Double Tap", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "onDoubleTap: ");
             return true;
         }
@@ -340,11 +341,11 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         }
 
         private void onSwipeUp() {
-            Toast.makeText(context, description.getMetadata() + " On Swipe Up", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, description.metadata() + " On Swipe Up", Toast.LENGTH_SHORT).show();
         }
 
         private void onSwipeDown() {
-            Toast.makeText(context, description.getMetadata() + " On Swipe Down", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, description.metadata() + " On Swipe Down", Toast.LENGTH_SHORT).show();
         }
 
         private void showDescriptionDownloadDialog() {
@@ -370,11 +371,10 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         }
 
         public void startAsyncTask(){
-            DownloadAsyncTask task = new DownloadAsyncTask(holder, context, position_);
-            Log.d(TAG, "startAsyncTask: " + position_);
+            DownloadAsyncTask task = new DownloadAsyncTask(holder, context);
             task.execute(10);
         }
-        private void downloadImmediately(Description description) {
+        private void downloadImmediately(DescriptionImpl description) {
 
         }
     }
@@ -382,18 +382,17 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     private enum SwipeDirection {UP, RIGHT, DOWN, LEFT, NOT_A_SWIPE};
 
     private static class DownloadAsyncTask extends AsyncTask<Integer, Integer, String> {
-
-        private WeakReference<DescriptionViewHolder> dvhWeakReference;
-        private WeakReference<DescriptionAdapter> daWeakReference;
         private WeakReference<Context> contextWeakReference;
-        private WeakReference<Integer> positionWeakReference;
+        private WeakReference<DescriptionViewHolder> dvhWeakReference;
+        private WeakReference<DescriptionImpl> descriptionWeakReference;
 
-        DownloadAsyncTask(DescriptionViewHolder descriptionViewHolder, Context context,
-                          Integer position, DescriptionAdapter descriptionAdapter) {
+
+        DownloadAsyncTask(Context context,
+                          DescriptionViewHolder descriptionViewHolder,
+                          DescriptionImpl description) {
             this.dvhWeakReference = new WeakReference<>(descriptionViewHolder);
             this.contextWeakReference = new WeakReference<>(context);
-            this.positionWeakReference = new WeakReference<>(position);
-            this.daWeakReference = new WeakReference<>(descriptionAdapter);
+            this.descriptionWeakReference = new WeakReference<>(description);
         }
 
         @Override
@@ -401,11 +400,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             Log.d(TAG, "onPreExecute: ");
             super.onPreExecute();
 
-            DescriptionAdapter da = daWeakReference.get();
-            if (da == null ) return;
-            DescriptionViewHolder dvh = da.findViewHolderForAdapterPosition(adapterPosition);
-            int pos = positionWeakReference.get();
-            Log.d(TAG, "onPreExecute: position " + pos);
+            DescriptionViewHolder dvh = dvhWeakReference.get();
             if (dvh == null ) return;
 
             dvh.cpiDescriptionDownload.setVisibility(View.VISIBLE);
@@ -438,9 +433,11 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.d(TAG, "onPostExecute: ");
-            DescriptionViewHolder dvh = dvhWeakReference.get();
             Context context = contextWeakReference.get();
-            if (dvh == null || context == null ) {
+            DescriptionViewHolder dvh = dvhWeakReference.get();
+            DescriptionImpl description = descriptionWeakReference.get();
+
+            if (context == null || dvh == null ||  description == null) {
                 Log.d(TAG, "onPostExecute: RETURN");
                 return;
             }
@@ -450,6 +447,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             dvh.cpiDescriptionDownload.setProgress(0);
             dvh.cpiDescriptionDownload.setIndeterminate(true);
             dvh.cpiDescriptionDownload.setVisibility(View.INVISIBLE);
+            description.
         }
     }
 }

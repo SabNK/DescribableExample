@@ -1,53 +1,45 @@
 package ru.polescanner.describableexample.domain.base;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
-import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 //ToDo Check if Video has to be serializable
-public class Video extends Description{
+public class Video extends DescriptionImpl {
 
     private Video(Builder builder){
         super(builder.thumbnail,
               builder.metadata,
-              builder.filepath,
-              builder.hash,
-              builder.isStored,
-              builder.utility);
+              builder.file);
     }
 
-    public static Builder video(@NonNull String filepath, @NonNull DescriptionIO utility) {
-        return video(filepath, utility.hash(filepath, null), utility);
+    public static Builder video(@NonNull String filepath, @NonNull Context context) {
+        return video(filepath, null, context);
     }
 
     public static Builder video(@NonNull String filepath,
-                                @NonNull String hash,
-                                @NonNull DescriptionIO utility) {
-        return new Builder(filepath, hash, utility);
+                                @Nullable String hash,
+                                @NonNull Context context) {
+        return new Builder(filepath, hash, context);
     }
 
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash, DescriptionIO utility) {
-            super(filepath, hash, utility);
+        private Builder(String filepath, String hash, Context context) {
+            super(filepath, hash, context);
         }
 
         @Override
         protected Bitmap createThumbnail() {
-            return utility.createVideoThumbnail(filepath, 1000);
+            return file.createVideoThumbnail(1000);
         }
 
         @Override
-        public Description build(){
+        public DescriptionImpl build(){
             setMetadata();
-            isStored();
-            checkThumbnail();
             return new Video(this);
         }
     }
