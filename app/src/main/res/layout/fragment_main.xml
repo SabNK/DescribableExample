@@ -7,8 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.MainFragment">
 
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvDescription"
         android:layout_width="match_parent"

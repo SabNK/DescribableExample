@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import ru.polescanner.describableexample.R;
+import ru.polescanner.describableexample.domain.base.DescriptionFileImpl;
 import ru.polescanner.describableexample.domain.base.DescriptionImpl;
 import ru.polescanner.describableexample.domain.base.DescriptionIO;
 import ru.polescanner.describableexample.domain.base.DescriptionUtility;
@@ -112,6 +113,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
                 .load(currDescription.thumbnail())
                 .into(holder.ivDescriptionThumbnail);
         holder.tvDescriptionMetadata.setText(currDescription.metadata());
+        holder.setDot(currDescription.isStored());
         gestureDetectors.add(new GestureDetector(context, new DescriptionGestureListener(holder)));
         holder.cvDescriptionItem.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -161,9 +163,11 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         DescriptionImpl.Metadata metadata = new DescriptionImpl.Metadata("ADD NOW!");
         String filename = DescriptionUtility.saveBitmapToFile(bm, context);
         DescriptionIO utility = new DescriptionUtility(context);
-        return new AddDescriptionImplStub(DescriptionUtility.getThumbnail(filename, context),
-                                          metadata, filename,
-                                          DescriptionUtility.getHash(filename), utility);
+        String hash = utility.hash(filename, null);
+        DescriptionFileImpl file = new DescriptionFileImpl(filename, hash, context);
+        return new AddDescription(DescriptionUtility.getThumbnail(filename, context),
+                                  metadata,
+                                  file);
     };
 
     private Bitmap getBitmap(int drawableRes) {
@@ -190,6 +194,13 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             tvDescriptionMetadata = itemView.findViewById(R.id.tvDescriptionMetadata);
             ivDescriptionIsStored = itemView.findViewById(R.id.ivDescriptionIsStored);
             cpiDescriptionDownload = itemView.findViewById(R.id.cpiDescriptionDownload);
+        }
+
+        public void setDot(boolean isStored){
+            if (isStored)
+                this.ivDescriptionIsStored.setImageResource(R.drawable.circle_is_stored);
+            else
+                this.ivDescriptionIsStored.setImageResource(R.drawable.circle_is_not_stored);
         }
     }
 
@@ -233,9 +244,9 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         }
     }
 
-    public class AddDescriptionStubViewHolder extends DescriptionViewHolder {
+    public class AddDescriptionViewHolder extends DescriptionViewHolder {
 
-        public AddDescriptionStubViewHolder(@NonNull View itemView) {
+        public AddDescriptionViewHolder(@NonNull View itemView) {
             super(itemView);
             cvDescriptionItem = itemView.findViewById(R.id.cvDescriptionAddStubItem);
         }
@@ -243,13 +254,16 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     }
 
     //ToDo make a res with an icon +add multimedia
-    private class AddDescriptionImplStub extends DescriptionImpl {
-        private AddDescriptionImplStub(@NonNull Bitmap thumbnail,
-                                       @NonNull Metadata metadata,
-                                       @NonNull String filename,
-                                       @NonNull String hash,
-                                       @NonNull DescriptionIO utility) {
-            super(thumbnail, metadata, filename, hash, true, utility);
+    private class AddDescription extends DescriptionImpl {
+        private AddDescription(@NonNull Bitmap thumbnail,
+                               @NonNull Metadata metadata,
+                               @NonNull DescriptionFileImpl file) {
+            super(thumbnail, metadata, file);
+        }
+
+        @Override
+        protected String intentType() {
+            return null;
         }
     }
 
@@ -286,10 +300,10 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (!description.isStored()) {
+            if (description.isStored()) {
                 Intent intent;
                 try {
-                    intent = description.view();
+                    intent = description.explore();
                 } catch (WeHaveNoFile ex) {
                     Toast.makeText(context, ex.getMessage()
                             , Toast.LENGTH_SHORT).show();
@@ -371,7 +385,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         }
 
         public void startAsyncTask(){
-            DownloadAsyncTask task = new DownloadAsyncTask(holder, context);
+            DownloadAsyncTask task = new DownloadAsyncTask(context, holder, description);
             task.execute(10);
         }
         private void downloadImmediately(DescriptionImpl description) {
@@ -447,7 +461,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             dvh.cpiDescriptionDownload.setProgress(0);
             dvh.cpiDescriptionDownload.setIndeterminate(true);
             dvh.cpiDescriptionDownload.setVisibility(View.INVISIBLE);
-            description.
+            description.isStored();
         }
     }
 }

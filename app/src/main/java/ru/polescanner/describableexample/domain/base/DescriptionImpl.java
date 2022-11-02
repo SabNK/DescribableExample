@@ -21,11 +21,11 @@ public abstract class DescriptionImpl implements Description{
     private final Bitmap thumbnail;
     private final String thumbnail64;
     final Metadata metadata;
-    final DescriptionFile file;
+    final DescriptionFileImpl file;
 
     protected DescriptionImpl(@NonNull Bitmap thumbnail,
                               @NonNull Metadata metadata,
-                              @NonNull DescriptionFile file) {
+                              @NonNull DescriptionFileImpl file) {
         this.thumbnail = thumbnail;
         this.thumbnail64 = "";//thumbnail64(thumbnail);
         this.metadata = metadata;
@@ -68,14 +68,31 @@ public abstract class DescriptionImpl implements Description{
         return file.isStored();
     }
 
-    public Intent view() throws WeHaveNoFile, WeFacedExternalStorageProblems{
-        if (!isStored()) throw new WeHaveNoFile("We need to download file. Do it immediate?");
+    public Intent explore() throws WeHaveNoFile, WeFacedExternalStorageProblems {
+        checkIsStored();
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setType("image/*");
+        intent.setType(intentType());
         Uri data = file.writeExternalStorage();
         if (data == null) return null; //ToDo Refactor Bugaenko
         intent.setData(data);
         return intent;
+    };
+
+    @Override
+    public Intent addDetails() throws WeHaveNoFile {
+        checkIsStored();
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType(intentType());
+        Uri data = file.writeExternalStorage();
+        if (data == null) return null; //ToDo Refactor Bugaenko
+        intent.setData(data);
+        return intent;
+    }
+
+    protected abstract String intentType();
+
+    public void download() {
+        this.file.loadFromServer();
     }
 
     public static class Metadata {
@@ -114,17 +131,17 @@ public abstract class DescriptionImpl implements Description{
         protected Metadata metadata;
         protected String author;
         protected LocalDate date;
-        protected DescriptionFile file;
+        protected DescriptionFileImpl file;
 
         protected GenericBuilder(@NonNull final String filepath,
                                  @NonNull final String hash,
                                  @NonNull final Context context) {
-            this.file = new DescriptionFile(filepath, hash, context);
+            this.file = new DescriptionFileImpl(filepath, hash, context);
         }
 
         protected GenericBuilder(@NonNull final String filepath,
                                  @NonNull final Context context) throws FileNotFoundException {
-            this.file = new DescriptionFile(filepath, context);
+            this.file = new DescriptionFileImpl(filepath, context);
         }
 
         public B thumbnail(@Nullable Bitmap thumbnail) {

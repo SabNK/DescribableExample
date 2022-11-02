@@ -1,6 +1,7 @@
 package ru.polescanner.describableexample.domain.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,13 @@ public class Audio extends DescriptionImpl {
               builder.metadata,
               builder.file);
     }
+
+    @Override
+    protected String intentType(){
+        return "/*"; //ToDo complete with MediaRecorder
+    }
+
+
     public static Builder audio(@NonNull String filepath, @NonNull Context context) {
         return audio(filepath, null, context);
     }

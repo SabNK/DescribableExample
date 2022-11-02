@@ -18,7 +18,7 @@ public class DevConstants {
         map.put("Video", 3);
         map.put("Audio", 4);
         map.put("Note", 5);
-        map.put("AddDescriptionStub", 6);
+        map.put("AddDescription", 6);
         return Collections.unmodifiableMap(map);
     }
 
@@ -29,7 +29,7 @@ public class DevConstants {
         map.put("Video", R.layout.item_description_video);
         map.put("Audio", R.layout.item_description_audio);
         map.put("Note", R.layout.item_description_note);
-        map.put("AddDescriptionStub", R.layout.item_description_add_stub);
+        map.put("AddDescription", R.layout.item_description_add);
         return Collections.unmodifiableMap(map);
     }
 }

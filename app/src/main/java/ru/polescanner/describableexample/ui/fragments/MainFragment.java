@@ -96,7 +96,7 @@ public class MainFragment extends Fragment {
                             DescriptionImpl desc;
                             if (k/2 == 0) {
                                 desc = ImagePortrait
-                                        .image(filename, null, utility)
+                                        .image(filename, view.getContext())
                                         .thumbnail(thumbnail)
                                         .author(authors[k])
                                         .date(dates[k])
@@ -104,7 +104,7 @@ public class MainFragment extends Fragment {
                             }
                             else {
                                 desc = ImageLandscape
-                                        .image(filename, utility)
+                                        .image(filename, view.getContext())
                                         .thumbnail(thumbnail)
                                         .author(authors[k])
                                         .date(dates[k])

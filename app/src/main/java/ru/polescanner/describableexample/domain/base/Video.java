@@ -25,6 +25,11 @@ public class Video extends DescriptionImpl {
         return new Builder(filepath, hash, context);
     }
 
+    @Override
+    protected String intentType() {
+        return "video/*";
+    }
+
 
     public static final class Builder extends GenericBuilder<Builder> {
 

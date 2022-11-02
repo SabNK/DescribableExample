@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Note extends DescriptionImpl {
 
@@ -17,16 +18,26 @@ public class Note extends DescriptionImpl {
     }
 
     public static Builder note(@NonNull String filepath,
-                               @NonNull String hash,
-                               @NonNull DescriptionIO utility) {
-        return new Builder(filepath, hash, utility);
+                               @Nullable String hash,
+                               @NonNull Context context) {
+        return new Builder(filepath, hash, context);
+    }
+
+    @Override
+    protected String intentType() {
+        return "*/*";
+        /*
+        String[] mimetypes = {"text/plain", "text/html", "text/richtext",
+                              "application/rtf", "application/x-rtf", "text/rtf"};
+        fileIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+         */
     }
 
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash, DescriptionIO utility) {
-            super(filepath, hash, utility);
+        private Builder(String filepath, String hash, Context context) {
+            super(filepath, hash, context);
         }
 
         @Override
@@ -37,9 +48,7 @@ public class Note extends DescriptionImpl {
         @Override
         public DescriptionImpl build(){
             setMetadata();
-            isStored();
             return new Note(this);
         }
     }
-
 }
