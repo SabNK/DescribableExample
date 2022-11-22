@@ -1,5 +1,6 @@
 package ru.polescanner.describableexample.domain.base;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
@@ -7,13 +8,13 @@ public interface Description {
 
     Bitmap thumbnail();
     String metadata();
-    boolean isStored();
-    Intent explore() throws WeHaveNoFile;
-    Intent addDetails() throws WeHaveNoFile;
+    boolean isStored(Context c);
+    Intent explore(Context c) throws WeHaveNoFile;
+    Intent addDetails(Context c) throws WeHaveNoFile;
     void download();
 
-    default void checkIsStored() throws WeHaveNoFile {
-        if (!isStored()) throw new WeHaveNoFile("We have no file!");
+    default void checkIsStored(Context c) throws WeHaveNoFile {
+        if (!isStored(c)) throw new WeHaveNoFile("We have no file!");
     }
 
     public static class FakeDescription implements Description {
@@ -34,19 +35,19 @@ public interface Description {
         }
 
         @Override
-        public boolean isStored() {
-            return file.isStored();
+        public boolean isStored(Context c) {
+            return file.isStored(c);
         }
 
         @Override
-        public Intent explore() throws WeHaveNoFile {
-            checkIsStored();
+        public Intent explore(Context c) throws WeHaveNoFile {
+            checkIsStored(c);
             return null;
         }
 
         @Override
-        public Intent addDetails() throws WeHaveNoFile {
-            checkIsStored();
+        public Intent addDetails(Context c) throws WeHaveNoFile {
+            checkIsStored(c);
             return null;
         }
 

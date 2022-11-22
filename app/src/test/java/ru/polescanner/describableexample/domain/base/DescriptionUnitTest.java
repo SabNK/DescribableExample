@@ -32,9 +32,9 @@ public class DescriptionUnitTest {
     @Test
     public void download_isStored_correct() {
         Description desc = new Description.FakeDescription();
-        assertThat(desc.isStored()).isFalse();
+        assertThat(desc.isStored(null)).isFalse();
         desc.download();
-        assertThat(desc.isStored()).isTrue();
+        assertThat(desc.isStored(null)).isTrue();
     }
 
 /*

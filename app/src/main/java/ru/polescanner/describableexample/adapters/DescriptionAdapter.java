@@ -113,7 +113,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
                 .load(currDescription.thumbnail())
                 .into(holder.ivDescriptionThumbnail);
         holder.tvDescriptionMetadata.setText(currDescription.metadata());
-        holder.setDot(currDescription.isStored());
+        holder.setDot(currDescription.isStored(context));
         gestureDetectors.add(new GestureDetector(context, new DescriptionGestureListener(holder)));
         holder.cvDescriptionItem.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -164,7 +164,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         String filename = DescriptionUtility.saveBitmapToFile(bm, context);
         DescriptionIO utility = new DescriptionUtility(context);
         String hash = utility.hash(filename, null);
-        DescriptionFileImpl file = new DescriptionFileImpl(filename, hash, context);
+        DescriptionFileImpl file = new DescriptionFileImpl(filename, hash);
         return new AddDescription(DescriptionUtility.getThumbnail(filename, context),
                                   metadata,
                                   file);
@@ -300,10 +300,10 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (description.isStored()) {
+            if (description.isStored(context)) {
                 Intent intent;
                 try {
-                    intent = description.explore();
+                    intent = description.explore(holder.itemView.getContext());
                 } catch (WeHaveNoFile ex) {
                     Toast.makeText(context, ex.getMessage()
                             , Toast.LENGTH_SHORT).show();
@@ -461,7 +461,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             dvh.cpiDescriptionDownload.setProgress(0);
             dvh.cpiDescriptionDownload.setIndeterminate(true);
             dvh.cpiDescriptionDownload.setVisibility(View.INVISIBLE);
-            description.isStored();
+            description.isStored(context);
         }
     }
 }

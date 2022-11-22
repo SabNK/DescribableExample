@@ -15,14 +15,13 @@ public class Video extends DescriptionImpl {
               builder.file);
     }
 
-    public static Builder video(@NonNull String filepath, @NonNull Context context) {
-        return video(filepath, null, context);
+    public static Builder description(@NonNull String filepath) {
+        return description(filepath, null);
     }
 
-    public static Builder video(@NonNull String filepath,
-                                @Nullable String hash,
-                                @NonNull Context context) {
-        return new Builder(filepath, hash, context);
+    public static Builder description(@NonNull String filepath,
+                                @Nullable String hash) {
+        return new Builder(filepath, hash);
     }
 
     @Override
@@ -33,13 +32,13 @@ public class Video extends DescriptionImpl {
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash, Context context) {
-            super(filepath, hash, context);
+        private Builder(String filepath, String hash) {
+            super(filepath, hash);
         }
 
         @Override
-        protected Bitmap createThumbnail() {
-            return file.createVideoThumbnail(1000);
+        protected Bitmap createThumbnail(Context context) {
+            return file.createVideoThumbnail(1000, context);
         }
 
         @Override

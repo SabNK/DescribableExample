@@ -21,25 +21,26 @@ public class Audio extends DescriptionImpl {
     }
 
 
-    public static Builder audio(@NonNull String filepath, @NonNull Context context) {
-        return audio(filepath, null, context);
+
+    public static Builder description(@NonNull String filepath) {
+        return description(filepath, null);
     }
 
-    public static Builder audio(@NonNull String filepath,
-                                @Nullable String hash,
-                                @NonNull Context context) {
-        return new Builder(filepath, hash, context);
+
+    public static Builder description(@NonNull String filepath,
+                                             @Nullable String hash) {
+        return new Builder(filepath, hash);
     }
 
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash, Context context) {
-            super(filepath, hash, context);
+        private Builder(String filepath, String hash) {
+            super(filepath, hash);
         }
 
         @Override
-        protected Bitmap createThumbnail() {
+        protected Bitmap createThumbnail(Context context) {
             return null;
         }
 

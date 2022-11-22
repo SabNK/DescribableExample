@@ -64,26 +64,27 @@ public abstract class DescriptionImpl implements Description{
         return metadata.toString();
     }
 
-    public boolean isStored() {
-        return file.isStored();
+    public boolean isStored(Context context) {
+        return file.isStored(context);
     }
 
-    public Intent explore() throws WeHaveNoFile, WeFacedExternalStorageProblems {
-        checkIsStored();
+    @Override
+    public Intent explore(Context context) throws WeHaveNoFile, WeFacedExternalStorageProblems {
+        checkIsStored(context);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setType(intentType());
-        Uri data = file.writeExternalStorage();
+        Uri data = file.writeExternalStorage(context);
         if (data == null) return null; //ToDo Refactor Bugaenko
         intent.setData(data);
         return intent;
     };
 
     @Override
-    public Intent addDetails() throws WeHaveNoFile {
-        checkIsStored();
+    public Intent addDetails(Context context) throws WeHaveNoFile {
+        checkIsStored(context);
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setType(intentType());
-        Uri data = file.writeExternalStorage();
+        Uri data = file.writeExternalStorage(context);
         if (data == null) return null; //ToDo Refactor Bugaenko
         intent.setData(data);
         return intent;
@@ -94,6 +95,12 @@ public abstract class DescriptionImpl implements Description{
     public void download() {
         this.file.loadFromServer();
     }
+
+    //Contract
+    public static GenericBuilder description(@NonNull String filepath,
+                                             @Nullable String hash){
+        return null;
+    };
 
     public static class Metadata {
         private final String author;
@@ -126,6 +133,7 @@ public abstract class DescriptionImpl implements Description{
         }
     }
 
+
     abstract static class GenericBuilder<B extends GenericBuilder<B>> {
         protected Bitmap thumbnail;
         protected Metadata metadata;
@@ -134,18 +142,16 @@ public abstract class DescriptionImpl implements Description{
         protected DescriptionFileImpl file;
 
         protected GenericBuilder(@NonNull final String filepath,
-                                 @NonNull final String hash,
-                                 @NonNull final Context context) {
-            this.file = new DescriptionFileImpl(filepath, hash, context);
+                                 @NonNull final String hash) {
+            this.file = new DescriptionFileImpl(filepath, hash);
         }
 
-        protected GenericBuilder(@NonNull final String filepath,
-                                 @NonNull final Context context) throws FileNotFoundException {
-            this.file = new DescriptionFileImpl(filepath, context);
+        protected GenericBuilder(@NonNull final String filepath) throws FileNotFoundException {
+            this.file = new DescriptionFileImpl(filepath);
         }
 
-        public B thumbnail(@Nullable Bitmap thumbnail) {
-            this.thumbnail = thumbnail==null ? this.createThumbnail() : thumbnail;
+        public B thumbnail(@Nullable Bitmap thumbnail, Context context) {
+            this.thumbnail = thumbnail==null ? this.createThumbnail(context) : thumbnail;
             return self();
         }
 
@@ -174,12 +180,12 @@ public abstract class DescriptionImpl implements Description{
                 this.metadata = new Metadata();
         }
 
-        protected void checkThumbnail(){
+        protected void checkThumbnail(Context context){
             if (thumbnail == null)
-                thumbnail = createThumbnail();
+                thumbnail = createThumbnail(context);
         }
 
-        protected abstract Bitmap createThumbnail();
+        protected abstract Bitmap createThumbnail(Context context);
 
         protected abstract DescriptionImpl build();
 

@@ -13,14 +13,13 @@ public class Note extends DescriptionImpl {
               builder.metadata,
               builder.file);
     }
-    public static Builder note(@NonNull String filepath, @NonNull Context context) {
-        return note(filepath, null, context);
+    public static Builder description(@NonNull String filepath) {
+        return description(filepath, null);
     }
 
-    public static Builder note(@NonNull String filepath,
-                               @Nullable String hash,
-                               @NonNull Context context) {
-        return new Builder(filepath, hash, context);
+    public static Builder description(@NonNull String filepath,
+                               @Nullable String hash) {
+        return new Builder(filepath, hash);
     }
 
     @Override
@@ -36,12 +35,12 @@ public class Note extends DescriptionImpl {
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash, Context context) {
-            super(filepath, hash, context);
+        private Builder(String filepath, String hash) {
+            super(filepath, hash);
         }
 
         @Override
-        protected Bitmap createThumbnail() {
+        protected Bitmap createThumbnail(Context context) {
             return null;
         }
 

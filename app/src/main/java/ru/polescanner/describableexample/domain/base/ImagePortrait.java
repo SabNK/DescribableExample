@@ -21,27 +21,26 @@ public class ImagePortrait extends Image {
               builder.file);
     }
 
-    public static Builder image(@NonNull String filepath, @NonNull Context context) {
-        return image(filepath, null, context);
+    public static Builder description(@NonNull String filepath) {
+        return description(filepath, null);
     }
 
-    public static Builder image(@NonNull String filepath,
-                                               @Nullable String hash,
-                                               @NonNull Context context) {
-        return new Builder(filepath, hash, context);
+    public static Builder description(@NonNull String filepath,
+                                               @Nullable String hash) {
+        return new Builder(filepath, hash);
     }
 
 
     public static final class Builder extends GenericBuilder<Builder> {
 
-        private Builder(String filepath, String hash, Context context) {
-            super(filepath, hash, context);
+        private Builder(String filepath, String hash) {
+            super(filepath, hash);
         }
 
         @Override
-        protected Bitmap createThumbnail() {
-            if (this.file.isStored()) {
-                Bitmap image = file.getImage();
+        protected Bitmap createThumbnail(Context context) {
+            if (this.file.isStored(context)) {
+                Bitmap image = file.getImage(context);
                 if (image == null) Log.d(TAG, "getThumbnail: image null");
                 return ThumbnailUtils.extractThumbnail(image,
                                                        DESCRIPTION_THUMB_PORTRAIT_WIDTH,

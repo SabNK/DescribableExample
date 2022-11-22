@@ -23,28 +23,22 @@ public class DescriptionFileImpl implements DescriptionFile {
     final String filepath;
     final String hash;
     protected boolean isStored;
-    private Context context;
 
     //CASE FROM DATABASE
     public DescriptionFileImpl(@NonNull String filepath,
-                               @NonNull String hash,
-                               @NonNull Context context) {
+                               @NonNull String hash) {
         this.filepath = filepath;
-        this.context = context;
         this.hash = hash;
-        this.isStored = isStored();
     }
+
     //case from camera or microphone etc.
-    public DescriptionFileImpl(@NonNull String filepath,
-                               @NonNull Context context) throws FileNotFoundException {
+    public DescriptionFileImpl(@NonNull String filepath) throws FileNotFoundException {
         this.filepath = filepath;
-        this.context = context;
-        this.isStored = isStored();
         this.hash = hash();
     }
 
-    public boolean isNotCorrupted(@NonNull final String hash) throws FileNotFoundException {
-        if (isStored()) {
+    public boolean isNotCorrupted(@NonNull final String hash, Context context) throws FileNotFoundException {
+        if (isStored(context)) {
             return DescriptionUtility.getHash(filepath).equals(hash);
         }
         else {
@@ -52,10 +46,10 @@ public class DescriptionFileImpl implements DescriptionFile {
         }
     }
 
-    public boolean isCorrupted() {
+    public boolean isCorrupted(Context context) {
         boolean result;
         try {
-            result = isNotCorrupted(hash);
+            result = isNotCorrupted(hash, context);
         }
         catch (FileNotFoundException e) {
             result = true;
@@ -75,7 +69,7 @@ public class DescriptionFileImpl implements DescriptionFile {
         return calculatedHash;
     }
 
-    public boolean isStored() {
+    public boolean isStored(Context context) {
         if (!isStored) {
             String fullFilePath = context.getFilesDir() + "/" + filepath;
             File file = new File(fullFilePath);
@@ -85,7 +79,7 @@ public class DescriptionFileImpl implements DescriptionFile {
         }
         return isStored;
     }
-    public Uri writeExternalStorage() {
+    public Uri writeExternalStorage(Context context) {
         if (isExternalStorageAvailable() && !isExternalStorageReadOnly()) {
             String internalFilePath = context.getFilesDir() + "/" + filepath;
             String externalFilePath = context.getExternalFilesDir("Description") + "/" + filepath;
@@ -125,8 +119,8 @@ public class DescriptionFileImpl implements DescriptionFile {
         return false;
     }
 
-    public Bitmap getImage() {
-        if (isStored()) {
+    public Bitmap getImage(Context context) {
+        if (isStored(context)) {
             String fullFilePath = context.getFilesDir() + "/" + filepath;
             return BitmapFactory.decodeFile(fullFilePath);
         }
@@ -142,11 +136,11 @@ public class DescriptionFileImpl implements DescriptionFile {
     }
 
     @Nullable
-    public Bitmap createVideoThumbnail(long timeUs) {
-        if (isStored()) {
+    public Bitmap createVideoThumbnail(long timeUs, Context context) {
+        if (isStored(context)) {
             Bitmap thumbnail;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                thumbnail = makeVideoThumbnail(filepath, timeUs);
+                thumbnail = makeVideoThumbnail(filepath, timeUs, context);
             } else {
                 thumbnail = ThumbnailUtils.createVideoThumbnail(filepath,
                                                                 MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
@@ -157,7 +151,7 @@ public class DescriptionFileImpl implements DescriptionFile {
             return null;
     }
     // https://stackoverflow.com/questions/65005765/generate-thumbnail-from-sdcard-in-android-q
-    private Bitmap makeVideoThumbnail(String filepath, long timeUs) {
+    private Bitmap makeVideoThumbnail(String filepath, long timeUs, Context context) {
         MediaMetadataRetriever mediaMetadataRetriever = null;
         Bitmap bitmap = null;
         try {

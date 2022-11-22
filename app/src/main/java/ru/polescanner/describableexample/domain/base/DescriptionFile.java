@@ -1,8 +1,10 @@
 package ru.polescanner.describableexample.domain.base;
 
+import android.content.Context;
+
 public interface DescriptionFile {
-    boolean isStored();
-    boolean isCorrupted();
+    boolean isStored(Context c);
+    boolean isCorrupted(Context c);
     void loadFromServer();
     void loadToServer();
 
@@ -15,12 +17,12 @@ public interface DescriptionFile {
         }
 
         @Override
-        public boolean isStored() {
+        public boolean isStored(Context c) {
             return isStored;
         }
 
         @Override
-        public boolean isCorrupted() {
+        public boolean isCorrupted(Context c) {
             return false;
         }
 
