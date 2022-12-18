@@ -1,13 +1,12 @@
 package ru.polescanner.describableexample.domain.base;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class Audio extends DescriptionImpl {
+public class Audio extends BaseDescription {
 
     private Audio(Builder builder){
         super(builder.thumbnail,
@@ -45,7 +44,7 @@ public class Audio extends DescriptionImpl {
         }
 
         @Override
-        public DescriptionImpl build(){
+        public BaseDescription build(){
             setMetadata();
             return new Audio(this);
         }

@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 import ru.polescanner.describableexample.R;
+import ru.polescanner.describableexample.domain.base.BaseDescription;
 import ru.polescanner.describableexample.domain.base.DescriptionFileImpl;
-import ru.polescanner.describableexample.domain.base.DescriptionImpl;
 import ru.polescanner.describableexample.domain.base.DescriptionIO;
 import ru.polescanner.describableexample.domain.base.DescriptionUtility;
 import ru.polescanner.describableexample.domain.base.DevConstants;
@@ -78,11 +78,11 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     }
 
     private Context context;
-    private List<DescriptionImpl> descriptions;
-    private DescriptionImpl description;
+    private List<BaseDescription> descriptions;
+    private BaseDescription description;
     private List<GestureDetector> gestureDetectors;
 
-    public DescriptionAdapter(Context context, List<DescriptionImpl> descriptions) {
+    public DescriptionAdapter(Context context, List<BaseDescription> descriptions) {
         this.context = context;
         this.descriptions = descriptions;
         this.descriptions.add(0, createAddDescriptionStub(context));
@@ -107,7 +107,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     public void onBindViewHolder(@NonNull final DescriptionViewHolder holder,
                                  @SuppressLint("RecyclerView") final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
-        DescriptionImpl currDescription = descriptions.get(position);
+        BaseDescription currDescription = descriptions.get(position);
         Glide.with(context)
                 .asBitmap()
                 .load(currDescription.thumbnail())
@@ -158,16 +158,16 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         return d;
     }
 
-    private DescriptionImpl createAddDescriptionStub(Context context){
+    private BaseDescription createAddDescriptionStub(Context context){
         Bitmap bm = getBitmap(R.drawable.ic_add_description);
-        DescriptionImpl.Metadata metadata = new DescriptionImpl.Metadata("ADD NOW!");
+        BaseDescription.Metadata metadata = new BaseDescription.Metadata("ADD NOW!");
         String filename = DescriptionUtility.saveBitmapToFile(bm, context);
         DescriptionIO utility = new DescriptionUtility(context);
         String hash = utility.hash(filename, null);
         DescriptionFileImpl file = new DescriptionFileImpl(filename, hash);
-        return new AddDescription(DescriptionUtility.getThumbnail(filename, context),
-                                  metadata,
-                                  file);
+        return new AddBaseDescription(DescriptionUtility.getThumbnail(filename, context),
+                                      metadata,
+                                      file);
     };
 
     private Bitmap getBitmap(int drawableRes) {
@@ -254,10 +254,10 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     }
 
     //ToDo make a res with an icon +add multimedia
-    private class AddDescription extends DescriptionImpl {
-        private AddDescription(@NonNull Bitmap thumbnail,
-                               @NonNull Metadata metadata,
-                               @NonNull DescriptionFileImpl file) {
+    private class AddBaseDescription extends BaseDescription {
+        private AddBaseDescription(@NonNull Bitmap thumbnail,
+                                   @NonNull Metadata metadata,
+                                   @NonNull DescriptionFileImpl file) {
             super(thumbnail, metadata, file);
         }
 
@@ -388,7 +388,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             DownloadAsyncTask task = new DownloadAsyncTask(context, holder, description);
             task.execute(10);
         }
-        private void downloadImmediately(DescriptionImpl description) {
+        private void downloadImmediately(BaseDescription description) {
 
         }
     }
@@ -398,12 +398,12 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     private static class DownloadAsyncTask extends AsyncTask<Integer, Integer, String> {
         private WeakReference<Context> contextWeakReference;
         private WeakReference<DescriptionViewHolder> dvhWeakReference;
-        private WeakReference<DescriptionImpl> descriptionWeakReference;
+        private WeakReference<BaseDescription> descriptionWeakReference;
 
 
         DownloadAsyncTask(Context context,
                           DescriptionViewHolder descriptionViewHolder,
-                          DescriptionImpl description) {
+                          BaseDescription description) {
             this.dvhWeakReference = new WeakReference<>(descriptionViewHolder);
             this.contextWeakReference = new WeakReference<>(context);
             this.descriptionWeakReference = new WeakReference<>(description);
@@ -449,7 +449,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
             Log.d(TAG, "onPostExecute: ");
             Context context = contextWeakReference.get();
             DescriptionViewHolder dvh = dvhWeakReference.get();
-            DescriptionImpl description = descriptionWeakReference.get();
+            BaseDescription description = descriptionWeakReference.get();
 
             if (context == null || dvh == null ||  description == null) {
                 Log.d(TAG, "onPostExecute: RETURN");

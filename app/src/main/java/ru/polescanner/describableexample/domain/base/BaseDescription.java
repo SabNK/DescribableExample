@@ -16,14 +16,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 
-public abstract class DescriptionImpl implements Description{
+public abstract class BaseDescription implements Description{
     //ToDo change to final
     private final Bitmap thumbnail;
     private final String thumbnail64;
-    final Metadata metadata;
+    protected final Metadata metadata;
     final DescriptionFileImpl file;
+    long timestamp;
+    User author;
+    Geo geo;
 
-    protected DescriptionImpl(@NonNull Bitmap thumbnail,
+    protected BaseDescription(@NonNull Bitmap thumbnail,
                               @NonNull Metadata metadata,
                               @NonNull DescriptionFileImpl file) {
         this.thumbnail = thumbnail;
@@ -36,7 +39,7 @@ public abstract class DescriptionImpl implements Description{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DescriptionImpl d = (DescriptionImpl) o;
+        BaseDescription d = (BaseDescription) o;
         return Objects.equals(file, d.getFile());
     }
     @Override
@@ -187,7 +190,7 @@ public abstract class DescriptionImpl implements Description{
 
         protected abstract Bitmap createThumbnail(Context context);
 
-        protected abstract DescriptionImpl build();
+        protected abstract BaseDescription build();
 
     }
 }

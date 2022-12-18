@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 //ToDo Check if Video has to be serializable
-public class Video extends DescriptionImpl {
+public class Video extends BaseDescription {
 
     private Video(Builder builder){
         super(builder.thumbnail,
@@ -42,7 +42,7 @@ public class Video extends DescriptionImpl {
         }
 
         @Override
-        public DescriptionImpl build(){
+        public BaseDescription build(){
             setMetadata();
             return new Video(this);
         }

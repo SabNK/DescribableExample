@@ -52,7 +52,7 @@ public class ImageLandscape extends Image {
         }
 
         @Override
-        public DescriptionImpl build(){
+        public BaseDescription build(){
             setMetadata();
             return new ImageLandscape(this);
         }

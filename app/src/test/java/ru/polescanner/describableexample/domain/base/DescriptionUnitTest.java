@@ -49,12 +49,12 @@ public class DescriptionUnitTest {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource,
                                                 @Nullable Transition<? super Bitmap> transition) {
-                        DescriptionImpl.Metadata metadata = new DescriptionImpl.Metadata(authors[k],
+                        BaseDescription.Metadata metadata = new BaseDescription.Metadata(authors[k],
                                                                                          dates[k]);
                         String filename = DescriptionUtility.saveBitmapToFile(resource, view.getContext());
                         Bitmap thumbnail = DescriptionUtility.getThumbnail(filename, view.getContext());
                         DescriptionIO utility = new DescriptionUtility(view.getContext());
-                        DescriptionImpl desc;
+                        BaseDescription desc;
                         if (k/2 == 0) {
                             desc = ImagePortrait
                                     .image(filename, view.getContext())

@@ -51,7 +51,7 @@ public class ImagePortrait extends Image {
         }
 
         @Override
-        public DescriptionImpl build(){
+        public BaseDescription build(){
             setMetadata();
             return new ImagePortrait(this);
         }

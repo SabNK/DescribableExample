@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DescribableEntity implements Describable{
-    List<DescriptionImpl> descriptions;
+    List<BaseDescription> descriptions;
     Image avatar;
 
     public DescribableEntity() {
@@ -12,12 +12,12 @@ public class DescribableEntity implements Describable{
     }
 
     @Override
-    public DescriptionImpl getAvatar() {
+    public BaseDescription getAvatar() {
         return avatar;
     }
 
     @Override
-    public void setAvatar(DescriptionImpl desc) {
+    public void setAvatar(BaseDescription desc) {
         if (desc instanceof Image) {
             if (!descriptions.contains(desc))
                 addDescription(desc);
@@ -26,12 +26,12 @@ public class DescribableEntity implements Describable{
     }
 
     @Override
-    public List<DescriptionImpl> getDescriptions() {
+    public List<BaseDescription> getDescriptions() {
         return descriptions;
     }
 
     @Override
-    public void addDescription(DescriptionImpl desc) {
+    public void addDescription(BaseDescription desc) {
         descriptions.add(desc);
     }
 

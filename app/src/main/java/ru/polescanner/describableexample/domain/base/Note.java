@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class Note extends DescriptionImpl {
+public class Note extends BaseDescription {
 
     private Note(Builder builder){
         super(builder.thumbnail,
@@ -45,7 +45,7 @@ public class Note extends DescriptionImpl {
         }
 
         @Override
-        public DescriptionImpl build(){
+        public BaseDescription build(){
             setMetadata();
             return new Note(this);
         }
