@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 
 public interface Description {
 
-    Bitmap thumbnail();
+    String thumbnail();
     String metadata();
     boolean isStored(Context c);
     Intent explore(Context c) throws WeHaveNoFile;

@@ -11,26 +11,28 @@ import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Date;
 import java.util.Objects;
+
+import ru.polescanner.describableexample.domain.geo.Geo;
 
 
 public abstract class BaseDescription implements Description{
     //ToDo change to final
-    private final Bitmap thumbnail;
     private final String thumbnail64;
     protected final Metadata metadata;
-    final DescriptionFileImpl file;
-    long timestamp;
-    User author;
-    Geo geo;
+    protected final DescriptionFileImpl file;
+    protected Description reference;
 
-    protected BaseDescription(@NonNull Bitmap thumbnail,
+    protected BaseDescription(@NonNull String thumbnail64,
                               @NonNull Metadata metadata,
                               @NonNull DescriptionFileImpl file) {
-        this.thumbnail = thumbnail;
-        this.thumbnail64 = "";//thumbnail64(thumbnail);
+        this.thumbnail64 = thumbnail64;
         this.metadata = metadata;
         this.file = file;
     }
@@ -59,8 +61,8 @@ public abstract class BaseDescription implements Description{
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
-    public Bitmap thumbnail() {
-        return thumbnail;
+    public String thumbnail() {
+        return thumbnail64;
     }
 
     public String metadata() {
@@ -106,42 +108,50 @@ public abstract class BaseDescription implements Description{
     };
 
     public static class Metadata {
-        private final String author;
-        private final LocalDate date;
+        private final User author;
+        private final long timestamp;
+        private final Geo location;
 
         //ToDo Checks from SecureByDesign
-        public Metadata(@NonNull final String author, @NonNull final LocalDate date) {
+        public Metadata(@NonNull final User author,
+                        @NonNull final long timestamp,
+                        @NonNull final Geo location) {
             this.author = author;
-            this.date = date;
+            this.timestamp = timestamp;
+            this.location = location;
         }
 
-        public Metadata(@NonNull final String author, @NonNull final String dateInString) {
-            this(author, LocalDate.parse(dateInString, DateTimeFormatter.ofPattern("dd.MM.yy")));
+        public Metadata() {
+            this.author = null;
+            this.timestamp = Instant.now().toEpochMilli();
         }
 
         public Metadata(@NonNull final String author) {
             this(author, LocalDate.now());
         }
 
-        //ToDo Add constructor with no args - take author from singlton
+        //ToDo Add constructor with no args - take author from singleton
         public Metadata() {
             this("");
         }
 
         @NonNull
         @Override
+        //ToDo Wrong Local TimeDate
         public String toString() {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
-            return this.author + " " + this.date.format(formatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+            LocalDate localDate = Instant.ofEpochMilli(timestamp).atZone(ZoneId.of("Europe/Moscow")).toLocalDate();
+            return this.author.acronym() + " " + localDate.format(formatter);
         }
+
     }
 
 
     abstract static class GenericBuilder<B extends GenericBuilder<B>> {
-        protected Bitmap thumbnail;
+        protected String thumbnail;
         protected Metadata metadata;
-        protected String author;
-        protected LocalDate date;
+        protected User author;
+        protected Instant timestamp;
         protected DescriptionFileImpl file;
 
         protected GenericBuilder(@NonNull final String filepath,
