@@ -1,4 +1,4 @@
-package ru.polescanner.describableexample.domain.base;
+package ru.polescanner.describableexample.domain.description;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,25 +16,31 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Date;
 import java.util.Objects;
 
+import ru.polescanner.describableexample.domain.base.Description;
+import ru.polescanner.describableexample.domain.base.DescriptionFile;
+import ru.polescanner.describableexample.domain.base.User;
 import ru.polescanner.describableexample.domain.geo.Geo;
 
 
-public abstract class BaseDescription implements Description{
+public abstract class BaseDescription implements Description {
     //ToDo change to final
     private final String thumbnail64;
     protected final Metadata metadata;
-    protected final DescriptionFileImpl file;
+    protected final DescriptionFile file;
     protected Description reference;
 
     protected BaseDescription(@NonNull String thumbnail64,
                               @NonNull Metadata metadata,
-                              @NonNull DescriptionFileImpl file) {
+                              @NonNull DescriptionFile file,
+                              @Nullable Description reference) {
+
         this.thumbnail64 = thumbnail64;
         this.metadata = metadata;
         this.file = file;
+        if (reference == null)
+            this.reference = this;
     }
 
     @Override
@@ -54,21 +60,16 @@ public abstract class BaseDescription implements Description{
     }
 
     //ToDo Move to Retrofit package
-    private static String thumbnail64(@NonNull Bitmap image){
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-    }
 
-    public String thumbnail() {
+    @Override
+    public String thumbnail64() {
         return thumbnail64;
     }
-
+    @Override
     public String metadata() {
         return metadata.toString();
     }
-
+    @Override
     public boolean isStored(Context context) {
         return file.isStored(context);
     }
@@ -84,8 +85,9 @@ public abstract class BaseDescription implements Description{
         return intent;
     };
 
+    //ToDo Think of crash during edit. When to make a new Description.
     @Override
-    public Intent addDetails(Context context) throws WeHaveNoFile {
+    public Intent editAndRefer(Context context) throws WeHaveNoFile {
         checkIsStored(context);
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setType(intentType());
@@ -121,18 +123,11 @@ public abstract class BaseDescription implements Description{
             this.location = location;
         }
 
+        //ToDo Add constructor with no args - take author from singleton
         public Metadata() {
             this.author = null;
             this.timestamp = Instant.now().toEpochMilli();
-        }
-
-        public Metadata(@NonNull final String author) {
-            this(author, LocalDate.now());
-        }
-
-        //ToDo Add constructor with no args - take author from singleton
-        public Metadata() {
-            this("");
+            this.location = null;
         }
 
         @NonNull
@@ -148,33 +143,50 @@ public abstract class BaseDescription implements Description{
 
 
     abstract static class GenericBuilder<B extends GenericBuilder<B>> {
-        protected String thumbnail;
+        protected String thumbnail64;
         protected Metadata metadata;
         protected User author;
-        protected Instant timestamp;
-        protected DescriptionFileImpl file;
+        protected long timestamp;
+        protected Geo location;
+        protected DescriptionFile file;
+        protected Description reference;
 
         protected GenericBuilder(@NonNull final String filepath,
                                  @NonNull final String hash) {
-            this.file = new DescriptionFileImpl(filepath, hash);
+            this.file = new BaseDescriptionFile(filepath, hash);
         }
 
         protected GenericBuilder(@NonNull final String filepath) throws FileNotFoundException {
-            this.file = new DescriptionFileImpl(filepath);
+            this.file = new BaseDescriptionFile(filepath);
         }
 
-        public B thumbnail(@Nullable Bitmap thumbnail, Context context) {
-            this.thumbnail = thumbnail==null ? this.createThumbnail(context) : thumbnail;
+        public B thumbnail(@NonNull String thumbnail64) {
+            this.thumbnail64 = thumbnail64;
             return self();
         }
 
-        public B author(String author){
+        public B thumbnail(Context context) {
+            this.thumbnail64 = this.createThumbnail64(context);
+            return self();
+        }
+
+        public B author(User author){
             this.author = author;
             return self();
         }
 
-        public B date(String dateDDPointMMPointYY){
-            this.date = LocalDate.parse(dateDDPointMMPointYY, DateTimeFormatter.ofPattern("dd.MM.yy"));
+        public B timestamp(long timestamp){
+            this.timestamp = timestamp;
+            return self();
+        }
+
+        public B location(Geo location){
+            this.location = location;
+            return self();
+        }
+
+        public B referenceDescription(Description reference){
+            this.reference = reference;
             return self();
         }
 
@@ -185,7 +197,7 @@ public abstract class BaseDescription implements Description{
 
         protected void setMetadata() {
             if (this.author != null) {
-                if (this.date != null)
+                if (this.timestamp != 0L)
                     this.metadata = new Metadata(this.author, this.date);
                 else
                     this.metadata = new Metadata(this.author);
@@ -193,14 +205,22 @@ public abstract class BaseDescription implements Description{
                 this.metadata = new Metadata();
         }
 
+        //ToDo Unclear method. Check - boolean?
         protected void checkThumbnail(Context context){
-            if (thumbnail == null)
-                thumbnail = createThumbnail(context);
+            if (thumbnail64 == null)
+                thumbnail64 = createThumbnail64(context);
         }
 
-        protected abstract Bitmap createThumbnail(Context context);
+        protected abstract String createThumbnail64(Context context);
 
         protected abstract BaseDescription build();
+
+        protected String thmbnail64(@NonNull Bitmap image){
+            ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
+            byte[] b = byteArrayBitmapStream.toByteArray();
+            return Base64.encodeToString(b, Base64.DEFAULT);
+        }
 
     }
 }

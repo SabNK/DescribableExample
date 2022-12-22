@@ -3,6 +3,9 @@ package ru.polescanner.describableexample.domain.base;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.polescanner.describableexample.domain.description.BaseDescription;
+import ru.polescanner.describableexample.domain.description.Image;
+
 public class DescribableEntity implements Describable{
     List<BaseDescription> descriptions;
     Image avatar;

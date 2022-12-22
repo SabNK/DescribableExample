@@ -4,13 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import ru.polescanner.describableexample.domain.description.WeHaveNoFile;
+
 public interface Description {
 
-    String thumbnail();
+    String thumbnail64();
     String metadata();
     boolean isStored(Context c);
     Intent explore(Context c) throws WeHaveNoFile;
-    Intent addDetails(Context c) throws WeHaveNoFile;
+    Intent editAndRefer(Context c) throws WeHaveNoFile;
     void download();
 
     default void checkIsStored(Context c) throws WeHaveNoFile {
@@ -25,7 +27,7 @@ public interface Description {
         }
 
         @Override
-        public Bitmap thumbnail() {
+        public String thumbnail64() {
             return null;
         }
 
@@ -46,7 +48,7 @@ public interface Description {
         }
 
         @Override
-        public Intent addDetails(Context c) throws WeHaveNoFile {
+        public Intent editAndRefer(Context c) throws WeHaveNoFile {
             checkIsStored(c);
             return null;
         }

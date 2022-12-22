@@ -1,12 +1,16 @@
 package ru.polescanner.describableexample.domain.base;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
 
 public interface DescriptionFile {
     boolean isStored(Context c);
     boolean isCorrupted(Context c);
     void loadFromServer();
     void loadToServer();
+    Uri writeExternalStorage(Context c);
+    Bitmap getImage(Context c);
 
 
     public static class FakeDescriptionFile implements DescriptionFile {
@@ -35,6 +39,9 @@ public interface DescriptionFile {
         public void loadToServer() {
             isStored = false;
         }
+
+        @Override
+        public Uri writeExternalStorage(Context c) { return null;}
     }
 
 }

@@ -1,7 +1,7 @@
-package ru.polescanner.describableexample.domain.base;
+package ru.polescanner.describableexample.domain.description;
 
-import static ru.polescanner.describableexample.domain.base.AdminConstants.DESCRIPTION_THUMB_LANDSCAPE_HEIGHT;
-import static ru.polescanner.describableexample.domain.base.AdminConstants.DESCRIPTION_THUMB_LANDSCAPE_WIDTH;
+import static ru.polescanner.describableexample.domain.description.AdminConstants.DESCRIPTION_THUMB_PORTRAIT_HEIGHT;
+import static ru.polescanner.describableexample.domain.description.AdminConstants.DESCRIPTION_THUMB_PORTRAIT_WIDTH;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-public class ImageLandscape extends Image {
-    private static final String TAG = "ImageLandscape";
+public class ImagePortrait extends Image {
+    private static final String TAG = "ImagePortrait";
 
-    private ImageLandscape(Builder builder){
+    private ImagePortrait(Builder builder){
         super(builder.thumbnail,
               builder.metadata,
               builder.file);
@@ -26,7 +26,7 @@ public class ImageLandscape extends Image {
     }
 
     public static Builder description(@NonNull String filepath,
-                                             @Nullable String hash) {
+                                               @Nullable String hash) {
         return new Builder(filepath, hash);
     }
 
@@ -42,10 +42,9 @@ public class ImageLandscape extends Image {
             if (this.file.isStored(context)) {
                 Bitmap image = file.getImage(context);
                 if (image == null) Log.d(TAG, "getThumbnail: image null");
-                //ToDo review (see video)
                 return ThumbnailUtils.extractThumbnail(image,
-                                                       DESCRIPTION_THUMB_LANDSCAPE_WIDTH,
-                                                       DESCRIPTION_THUMB_LANDSCAPE_HEIGHT);
+                                                       DESCRIPTION_THUMB_PORTRAIT_WIDTH,
+                                                       DESCRIPTION_THUMB_PORTRAIT_HEIGHT);
             }
             else
                 return null;
@@ -54,7 +53,7 @@ public class ImageLandscape extends Image {
         @Override
         public BaseDescription build(){
             setMetadata();
-            return new ImageLandscape(this);
+            return new ImagePortrait(this);
         }
     }
 }

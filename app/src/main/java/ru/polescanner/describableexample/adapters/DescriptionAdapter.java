@@ -37,13 +37,13 @@ import java.util.List;
 import java.util.Map;
 
 import ru.polescanner.describableexample.R;
-import ru.polescanner.describableexample.domain.base.BaseDescription;
-import ru.polescanner.describableexample.domain.base.DescriptionFileImpl;
-import ru.polescanner.describableexample.domain.base.DescriptionIO;
-import ru.polescanner.describableexample.domain.base.DescriptionUtility;
-import ru.polescanner.describableexample.domain.base.DevConstants;
-import ru.polescanner.describableexample.domain.base.WeFacedExternalStorageProblems;
-import ru.polescanner.describableexample.domain.base.WeHaveNoFile;
+import ru.polescanner.describableexample.domain.description.BaseDescription;
+import ru.polescanner.describableexample.domain.description.BaseDescriptionFile;
+import ru.polescanner.describableexample.domain.description.DescriptionIO;
+import ru.polescanner.describableexample.domain.description.DescriptionUtility;
+import ru.polescanner.describableexample.domain.description.DevConstants;
+import ru.polescanner.describableexample.domain.description.WeFacedExternalStorageProblems;
+import ru.polescanner.describableexample.domain.description.WeHaveNoFile;
 
 //ToDo discuss async operations with load multimedia from Server
 public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.DescriptionViewHolder> {
@@ -110,7 +110,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         BaseDescription currDescription = descriptions.get(position);
         Glide.with(context)
                 .asBitmap()
-                .load(currDescription.thumbnail())
+                .load(currDescription.thumbnail64())
                 .into(holder.ivDescriptionThumbnail);
         holder.tvDescriptionMetadata.setText(currDescription.metadata());
         holder.setDot(currDescription.isStored(context));
@@ -164,7 +164,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
         String filename = DescriptionUtility.saveBitmapToFile(bm, context);
         DescriptionIO utility = new DescriptionUtility(context);
         String hash = utility.hash(filename, null);
-        DescriptionFileImpl file = new DescriptionFileImpl(filename, hash);
+        BaseDescriptionFile file = new BaseDescriptionFile(filename, hash);
         return new AddBaseDescription(DescriptionUtility.getThumbnail(filename, context),
                                       metadata,
                                       file);
@@ -257,7 +257,7 @@ public class DescriptionAdapter extends RecyclerView.Adapter<DescriptionAdapter.
     private class AddBaseDescription extends BaseDescription {
         private AddBaseDescription(@NonNull Bitmap thumbnail,
                                    @NonNull Metadata metadata,
-                                   @NonNull DescriptionFileImpl file) {
+                                   @NonNull BaseDescriptionFile file) {
             super(thumbnail, metadata, file);
         }
 

@@ -22,11 +22,11 @@ import com.bumptech.glide.request.transition.Transition;
 
 import ru.polescanner.describableexample.R;
 import ru.polescanner.describableexample.adapters.DescriptionAdapter;
-import ru.polescanner.describableexample.domain.base.BaseDescription;
-import ru.polescanner.describableexample.domain.base.DescriptionIO;
-import ru.polescanner.describableexample.domain.base.DescriptionUtility;
-import ru.polescanner.describableexample.domain.base.ImagePortrait;
-import ru.polescanner.describableexample.domain.base.ImageLandscape;
+import ru.polescanner.describableexample.domain.description.BaseDescription;
+import ru.polescanner.describableexample.domain.description.DescriptionIO;
+import ru.polescanner.describableexample.domain.description.DescriptionUtility;
+import ru.polescanner.describableexample.domain.description.ImagePortrait;
+import ru.polescanner.describableexample.domain.description.ImageLandscape;
 import ru.polescanner.describableexample.ui.viewmodels.MainViewModel;
 
 public class MainFragment extends Fragment {

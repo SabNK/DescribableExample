@@ -1,4 +1,4 @@
-package ru.polescanner.describableexample.domain.base;
+package ru.polescanner.describableexample.domain.description;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,24 +19,27 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class DescriptionFileImpl implements DescriptionFile {
+import ru.polescanner.describableexample.domain.base.DescriptionFile;
+
+public class BaseDescriptionFile implements DescriptionFile {
     final String filepath;
     final String hash;
     protected boolean isStored;
 
     //CASE FROM DATABASE
-    public DescriptionFileImpl(@NonNull String filepath,
+    public BaseDescriptionFile(@NonNull String filepath,
                                @NonNull String hash) {
         this.filepath = filepath;
         this.hash = hash;
     }
 
     //case from camera or microphone etc.
-    public DescriptionFileImpl(@NonNull String filepath) throws FileNotFoundException {
+    public BaseDescriptionFile(@NonNull String filepath) throws FileNotFoundException {
         this.filepath = filepath;
         this.hash = hash();
     }
 
+    //ToDo move from DescriptionUtility
     public boolean isNotCorrupted(@NonNull final String hash, Context context) throws FileNotFoundException {
         if (isStored(context)) {
             return DescriptionUtility.getHash(filepath).equals(hash);

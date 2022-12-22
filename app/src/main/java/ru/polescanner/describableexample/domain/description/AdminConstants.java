@@ -1,4 +1,4 @@
-package ru.polescanner.describableexample.domain.base;
+package ru.polescanner.describableexample.domain.description;
 
 public class AdminConstants {
     //ToDo clean that mess

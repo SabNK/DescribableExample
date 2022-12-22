@@ -1,20 +1,5 @@
 package ru.polescanner.describableexample.domain.base;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

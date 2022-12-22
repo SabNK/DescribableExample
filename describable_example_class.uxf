@@ -1,9 +1,8 @@
-<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><element><id>UMLInterface</id><coordinates><x>60</x><y>60</y><w>220</w><h>100</h></coordinates><panel_attributes>Describable
+<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><element><id>UMLInterface</id><coordinates><x>1280</x><y>30</y><w>200</w><h>100</h></coordinates><panel_attributes>Describable
 --
 getDescriptions(): Descriptions[] 
-addDescription(desc: Description)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>190</y><w>310</w><h>630</h></coordinates><panel_attributes>/Description/
+addDescription(desc: Description)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>240</x><y>200</y><w>310</w><h>630</h></coordinates><panel_attributes>/BaseDescription/
 --
--THUMBNAIL:  Bitmap
 -THUMBNAIL64: String
 #metadata: Metadata
 #filepath: String
@@ -51,7 +50,7 @@ innerclass}
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>400</x><y>190</y><w>290</w><h>130</h></coordinates><panel_attributes>Image
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>580</x><y>200</y><w>290</w><h>130</h></coordinates><panel_attributes>Image
 --
 -Image(builder: Image.Builder)
 __image(filename: String): Builder__
@@ -61,4 +60,19 @@ __image(filename: String): Builder__
 --
 -Builder(filename: String)
 +build(): Description
-innerclass}</panel_attributes><additional_attributes></additional_attributes></element></diagram>
+innerclass}</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLInterface</id><coordinates><x>0</x><y>20</y><w>80</w><h>100</h></coordinates><panel_attributes>Interface
+--
+Operation1
+Operation2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLInterface</id><coordinates><x>1460</x><y>280</y><w>80</w><h>100</h></coordinates><panel_attributes>Interface
+--
+Operation1
+Operation2</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLInterface</id><coordinates><x>240</x><y>0</y><w>200</w><h>190</h></coordinates><panel_attributes>Description
+--
+thumbnail64() : String
+metadata(): String
+isStored(c: Context): boolean
+explore(c: Context): Intent
+editAndRefer(c: Context): Intent
+download(): void
+checkIsStored(c: Context)
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>

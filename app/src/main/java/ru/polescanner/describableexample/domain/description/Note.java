@@ -1,4 +1,4 @@
-package ru.polescanner.describableexample.domain.base;
+package ru.polescanner.describableexample.domain.description;
 
 import android.content.Context;
 import android.graphics.Bitmap;

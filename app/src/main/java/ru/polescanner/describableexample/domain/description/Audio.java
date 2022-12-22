@@ -1,4 +1,4 @@
-package ru.polescanner.describableexample.domain.base;
+package ru.polescanner.describableexample.domain.description;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,27 +6,29 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-//ToDo Check if Video has to be serializable
-public class Video extends BaseDescription {
+public class Audio extends BaseDescription {
 
-    private Video(Builder builder){
+    private Audio(Builder builder){
         super(builder.thumbnail,
               builder.metadata,
               builder.file);
     }
 
+    @Override
+    protected String intentType(){
+        return "/*"; //ToDo complete with MediaRecorder
+    }
+
+
+
     public static Builder description(@NonNull String filepath) {
         return description(filepath, null);
     }
 
-    public static Builder description(@NonNull String filepath,
-                                @Nullable String hash) {
-        return new Builder(filepath, hash);
-    }
 
-    @Override
-    protected String intentType() {
-        return "video/*";
+    public static Builder description(@NonNull String filepath,
+                                             @Nullable String hash) {
+        return new Builder(filepath, hash);
     }
 
 
@@ -38,13 +40,14 @@ public class Video extends BaseDescription {
 
         @Override
         protected Bitmap createThumbnail(Context context) {
-            return file.createVideoThumbnail(1000, context);
+            return null;
         }
 
         @Override
         public BaseDescription build(){
             setMetadata();
-            return new Video(this);
+            return new Audio(this);
         }
     }
+
 }
